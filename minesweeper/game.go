@@ -19,7 +19,7 @@ type GameService struct {
 	store models.MineSweeperStorage
 }
 
-func (s *GameService) Create(game *models.Game) error {
+func (s *GameService) CreateGame(game *models.Game) error {
 
 	if game.Name == "" {
 		game.Name = getUUIDName()
@@ -64,7 +64,7 @@ func (s *GameService) Start(name string) (*models.Game, error) {
 
 	buildBoard(game)
 
-	game.Status = "started"
+	game.Status = "in_progress"
 	err = s.store.Update(game)
 	logs.Sugar().Infof("%#v\n", game.Grid)
 	return game, err
