@@ -15,8 +15,8 @@ type MineSweeperStorage interface {
 }
 
 type UserStorage interface {
-	Save(u *User) error
-	GetByName(name string) (*User, error)
+	Create(u *User) error
+	GetByName(username string) (*User, error)
 }
 
 type Cell struct {
