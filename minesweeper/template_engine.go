@@ -63,9 +63,34 @@ func clickCell(game *models.Game, i, j int) error {
 	}
 	game.Grid[i][j].Clicked = true
 	if game.Grid[i][j].Mine {
-		game.Status = "over"
+		game.Status = "lost"
 		return nil
 	}
+	game.Clicks += 1
+	if checkWon(game) {
+		game.Status = "won"
+	}
+
+	return nil
+}
+
+func flagOrQuestionMarkCell(game *models.Game, i, j int, clickType string) error {
+	switch clickType {
+	// assume that a flagged cell could change to marked or vice versa
+	case "flag":
+		if game.Grid[i][j].Flagged {
+			return errors.New("cell already flagged")
+		}
+		game.Grid[i][j].Flagged = true
+	case "mark":
+		if game.Grid[i][j].Marked {
+			return errors.New("cell already marked")
+		}
+		game.Grid[i][j].Marked = true
+	default:
+		return errors.New("unknown event")
+	}
+
 	game.Clicks += 1
 	if checkWon(game) {
 		game.Status = "won"

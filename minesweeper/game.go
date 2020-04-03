@@ -76,8 +76,14 @@ func (s *GameService) Click(name, clickType string, i, j int) (*models.Game, err
 		return nil, err
 	}
 
-	if err := clickCell(game, i, j); err != nil {
-		return nil, err
+	if isNormalClick(clickType) {
+		if err := clickCell(game, i, j); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := flagOrQuestionMarkCell(game, i, j, clickType); err != nil {
+			return nil, err
+		}
 	}
 
 	if err := s.store.Update(game); err != nil {
@@ -85,6 +91,10 @@ func (s *GameService) Click(name, clickType string, i, j int) (*models.Game, err
 	}
 
 	return game, nil
+}
+
+func isNormalClick(clickType string) bool {
+	return clickType == "click"
 }
 
 func getUUIDName() string {
