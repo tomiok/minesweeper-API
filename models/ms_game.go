@@ -3,7 +3,7 @@ package models
 type MineSweeperService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
-	Click(name string, i, j int) (*Game, error)
+	Click(name, clickType string, i, j int) (*Game, error)
 }
 
 type MineSweeperStorage interface {
@@ -16,6 +16,8 @@ type Cell struct {
 	Mine    bool `json:"mine"`
 	Clicked bool `json:"clicked"`
 	Value   int  `json:"value"`
+	Flagged bool `json:"flagged"` // add a red flag in the cell
+	Marked  bool `json:"marked"` // add a question mark
 }
 
 type CellGrid []Cell

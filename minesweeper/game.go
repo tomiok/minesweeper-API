@@ -70,7 +70,7 @@ func (s *GameService) Start(name string) (*models.Game, error) {
 	return game, err
 }
 
-func (s *GameService) Click(name string, i, j int) (*models.Game, error) {
+func (s *GameService) Click(name, clickType string, i, j int) (*models.Game, error) {
 	game, err := s.store.GetByName(name)
 	if err != nil {
 		return nil, err
