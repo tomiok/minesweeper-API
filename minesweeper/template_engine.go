@@ -66,7 +66,7 @@ func clickCell(game *models.Game, i, j int) error {
 		game.Status = "lost"
 		return nil
 	}
-	game.Clicks += 1
+	game.ClickCounter += 1
 	if checkWon(game) {
 		game.Status = "won"
 	}
@@ -91,7 +91,7 @@ func flagOrQuestionMarkCell(game *models.Game, i, j int, clickType string) error
 		return errors.New("unknown event")
 	}
 
-	game.Clicks += 1
+	game.ClickCounter += 1
 	if checkWon(game) {
 		game.Status = "won"
 	}
@@ -100,5 +100,5 @@ func flagOrQuestionMarkCell(game *models.Game, i, j int, clickType string) error
 }
 
 func checkWon(game *models.Game) bool {
-	return game.Clicks == ((game.Rows * game.Cols) - game.Mines)
+	return game.ClickCounter == ((game.Rows * game.Cols) - game.Mines)
 }

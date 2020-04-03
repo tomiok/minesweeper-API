@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type MineSweeperService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
@@ -10,6 +12,11 @@ type MineSweeperStorage interface {
 	Create(game *Game) error
 	Update(game *Game) error
 	GetByName(name string) (*Game, error)
+}
+
+type UserStorage interface {
+	Save(u *User) error
+	GetByName(name string) (*User, error)
 }
 
 type Cell struct {
@@ -23,12 +30,17 @@ type Cell struct {
 type CellGrid []Cell
 
 type Game struct {
-	Name     string     `json:"name"`
-	Rows     int        `json:"rows"`
-	Cols     int        `json:"cols"`
-	Mines    int        `json:"mines"`
-	Status   string     `json:"status"` //new, in_progress, won, lost
-	Grid     []CellGrid `json:"grid,omitempty"`
-	Clicks   int        `json:"-"`
-	Username string     `json:"username"`
+	Name         string     `json:"name"`
+	Rows         int        `json:"rows"`
+	Cols         int        `json:"cols"`
+	Mines        int        `json:"mines"`
+	Status       string     `json:"status"` //new, in_progress, won, lost
+	Grid         []CellGrid `json:"grid,omitempty"`
+	ClickCounter int        `json:"-"`
+	Username     string     `json:"username"`
+}
+
+type User struct {
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"-"`
 }

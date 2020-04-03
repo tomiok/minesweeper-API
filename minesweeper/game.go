@@ -1,6 +1,7 @@
 package minesweeper
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"github.com/tomiok/minesweeper-API/internal/logs"
 	"github.com/tomiok/minesweeper-API/models"
@@ -16,10 +17,21 @@ const (
 )
 
 type GameService struct {
-	store models.MineSweeperStorage
+	gameStorage models.MineSweeperStorage
+	userStorage models.UserStorage
 }
 
 func (s *GameService) CreateGame(game *models.Game) error {
+	username := game.Username
+	if username == "" {
+		return errors.New("username empty is not allowed")
+	}
+
+	_, err := s.userStorage.GetByName(username)
+
+	if err != nil {
+		return errors.New("cannot find username")
+	}
 
 	if game.Name == "" {
 		game.Name = getUUIDName()
@@ -52,12 +64,12 @@ func (s *GameService) CreateGame(game *models.Game) error {
 	}
 	game.Status = "new"
 
-	err := s.store.Create(game)
+	err = s.gameStorage.Create(game)
 	return err
 }
 
 func (s *GameService) Start(name string) (*models.Game, error) {
-	game, err := s.store.GetByName(name)
+	game, err := s.gameStorage.GetByName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -65,13 +77,13 @@ func (s *GameService) Start(name string) (*models.Game, error) {
 	buildBoard(game)
 
 	game.Status = "in_progress"
-	err = s.store.Update(game)
+	err = s.gameStorage.Update(game)
 	logs.Sugar().Infof("%#v\n", game.Grid)
 	return game, err
 }
 
 func (s *GameService) Click(name, clickType string, i, j int) (*models.Game, error) {
-	game, err := s.store.GetByName(name)
+	game, err := s.gameStorage.GetByName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +98,7 @@ func (s *GameService) Click(name, clickType string, i, j int) (*models.Game, err
 		}
 	}
 
-	if err := s.store.Update(game); err != nil {
+	if err := s.gameStorage.Update(game); err != nil {
 		return nil, err
 	}
 
