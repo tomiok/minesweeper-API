@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/tomiok/minesweeper-API/internal/logs"
 	"github.com/tomiok/minesweeper-API/models"
+	"github.com/tomiok/minesweeper-API/storage"
 )
 
 const (
@@ -19,6 +20,13 @@ const (
 type GameService struct {
 	gameStorage models.MineSweeperStorage
 	userStorage models.UserStorage
+}
+
+func NewGameService(db *storage.DB) models.MineSweeperService {
+	return &GameService{
+		gameStorage: storage.NewGameEngineStorage(db),
+		userStorage: storage.NewUserStorage(db),
+	}
 }
 
 func (s *GameService) CreateGame(game *models.Game) error {
