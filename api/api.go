@@ -7,13 +7,15 @@ import (
 )
 
 type Services struct {
-	gameService models.MineSweeperService
+	gameService models.MineSweeperGameService
+	userService models.MineSweeperUserService
 }
 
 func Start(port string) {
 	db := storage.New()
 	services := &Services{
 		gameService: minesweeper.NewGameService(db),
+		userService: minesweeper.NewUserService(db),
 	}
 
 	r := routes(services)

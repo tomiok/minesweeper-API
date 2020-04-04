@@ -2,19 +2,24 @@ package models
 
 import "time"
 
-type MineSweeperService interface {
+type MineSweeperGameService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
 	Click(name, clickType string, i, j int) (*Game, error)
 }
 
-type MineSweeperStorage interface {
+type MineSweeperGameStorage interface {
 	Create(game *Game) error
 	Update(game *Game) error
 	GetByName(name string) (*Game, error)
 }
 
-type UserStorage interface {
+type MineSweeperUserService interface {
+	CreateUser(u *User) error
+	GetUserByName(username string) (*User, error)
+}
+
+type MineSweeperUserStorage interface {
 	Create(u *User) error
 	GetByName(username string) (*User, error)
 }

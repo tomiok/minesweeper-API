@@ -6,9 +6,10 @@ import (
 )
 
 var (
-	ErrInvalidJSON    = GameError{StatusCode: http.StatusBadRequest, Type: "invalid_json", Message: "Invalid or malformed JSON"}
+	ErrBadRequest  = GameError{StatusCode: http.StatusBadRequest, Type: "api_error", Message: "Cannot process current request"}
+	ErrInvalidJSON = GameError{StatusCode: http.StatusBadRequest, Type: "invalid_json", Message: "Invalid or malformed JSON"}
 	// decide between conflict and bad request
-	ErrAlreadyExists  = GameError{StatusCode: http.StatusConflict, Type: "duplicate_entry", Message: "Another entity has the same value as this field"}
+	ErrAlreadyExists = GameError{StatusCode: http.StatusConflict, Type: "duplicate_entry", Message: "Another entity has the same value as this field"}
 )
 
 type GameError struct {

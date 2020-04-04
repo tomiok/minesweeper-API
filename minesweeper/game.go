@@ -1,3 +1,4 @@
+// All the interfaces implementations start with MS (for minesweeper)
 package minesweeper
 
 import (
@@ -17,25 +18,43 @@ const (
 	maxCols      = 30
 )
 
-type GameService struct {
-	gameStorage models.MineSweeperStorage
-	userStorage models.UserStorage
+type MSGameService struct {
+	gameStorage models.MineSweeperGameStorage
+	userService models.MineSweeperUserService
 }
 
-func NewGameService(db *storage.DB) models.MineSweeperService {
-	return &GameService{
+type MSUserService struct {
+	models.MineSweeperUserStorage
+}
+
+func (u *MSUserService) CreateUser(user *models.User) error {
+	return u.MineSweeperUserStorage.Create(user)
+}
+
+func (u *MSUserService) GetUserByName(name string) (*models.User, error) {
+	return u.MineSweeperUserStorage.GetByName(name)
+}
+
+func NewGameService(db *storage.DB) models.MineSweeperGameService {
+	return &MSGameService{
 		gameStorage: storage.NewGameEngineStorage(db),
-		userStorage: storage.NewUserStorage(db),
+		userService: &MSUserService{storage.NewUserStorage(db)},
 	}
 }
 
-func (s *GameService) CreateGame(game *models.Game) error {
+func NewUserService(db *storage.DB) models.MineSweeperUserService {
+	return &MSUserService{
+		storage.NewUserStorage(db),
+	}
+}
+
+func (s *MSGameService) CreateGame(game *models.Game) error {
 	username := game.Username
 	if username == "" {
 		return errors.New("username empty is not allowed")
 	}
 
-	_, err := s.userStorage.GetByName(username)
+	_, err := s.userService.GetUserByName(username)
 
 	if err != nil {
 		return errors.New("cannot find username")
@@ -76,7 +95,7 @@ func (s *GameService) CreateGame(game *models.Game) error {
 	return err
 }
 
-func (s *GameService) Start(name string) (*models.Game, error) {
+func (s *MSGameService) Start(name string) (*models.Game, error) {
 	game, err := s.gameStorage.GetByName(name)
 	if err != nil {
 		return nil, err
@@ -90,7 +109,7 @@ func (s *GameService) Start(name string) (*models.Game, error) {
 	return game, err
 }
 
-func (s *GameService) Click(name, clickType string, i, j int) (*models.Game, error) {
+func (s *MSGameService) Click(name, clickType string, i, j int) (*models.Game, error) {
 	game, err := s.gameStorage.GetByName(name)
 	if err != nil {
 		return nil, err
