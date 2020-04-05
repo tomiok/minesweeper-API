@@ -49,3 +49,9 @@ type User struct {
 	Username  string    `json:"username"`
 	CreatedAt time.Time `json:"-"`
 }
+
+type ClickAction struct {
+	Row       int    `json:"row"`
+	Col       int    `json:"col"`
+	ClickType string `json:"click_type"`
+}

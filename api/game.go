@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi"
 	"github.com/tomiok/minesweeper-API/internal/logs"
 	"github.com/tomiok/minesweeper-API/models"
 	"go.uber.org/zap"
@@ -53,12 +54,61 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Services) startGame(w http.ResponseWriter, r *http.Request) {
-	username := ""
-	game := ""
-	s.userService.GetUserByName(username)
-	s.gameService.Start(game)
+	username := chi.URLParam(r, "username")
+	gameID := chi.URLParam(r, "gameID")
+
+	if _, err := s.userService.GetUserByName(username); err != nil {
+		logs.Log().Error("user is not present", zap.Error(err))
+		ErrBadRequest.Send(w)
+		return
+	}
+
+	game, err := s.gameService.Start(gameID)
+	if err != nil {
+		logs.Log().Error("cannot start game	", zap.Error(err))
+		ErrBadRequest.Send(w)
+		return
+	}
+
+	Success(game, http.StatusOK)
 }
 
 func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
+	username := chi.URLParam(r, "username")
+	gameID := chi.URLParam(r, "gameID")
 
+	body := r.Body
+	defer body.Close()
+
+	if _, err := s.userService.GetUserByName(username); err != nil {
+		logs.Log().Error("user is not present", zap.Error(err))
+		ErrBadRequest.Send(w)
+		return
+	}
+
+	var clickAction models.ClickAction
+	if err := json.NewDecoder(body).Decode(&clickAction); err != nil {
+		ErrInvalidJSON.Send(w)
+		return
+	}
+
+	// always keep the order ROW-COL
+	game, err := s.gameService.Click(gameID, clickAction.ClickType, clickAction.Row, clickAction.Col)
+
+	if err != nil {
+		logs.Log().Error("cannot click the current cell", zap.Error(err))
+		return
+	}
+
+	type Res struct {
+		Game    *models.Game        `json:"game"`
+		Clicked *models.ClickAction `json:"clicked"`
+	}
+
+	res := Res{
+		Game:    game,
+		Clicked: &clickAction,
+	}
+
+	Success(&res, http.StatusOK)
 }
