@@ -28,7 +28,7 @@ func (s *Services) createGameHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Success(game, http.StatusCreated)
+	Success(game, http.StatusCreated).Send(w)
 }
 
 func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Success(&user, http.StatusCreated)
+	Success(&user, http.StatusCreated).Send(w)
 }
 
 func (s *Services) startGame(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +70,7 @@ func (s *Services) startGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Success(game, http.StatusOK)
+	Success(game, http.StatusOK).Send(w)
 }
 
 func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
@@ -110,5 +110,5 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 		Clicked: &clickAction,
 	}
 
-	Success(&res, http.StatusOK)
+	Success(&res, http.StatusOK).Send(w)
 }
