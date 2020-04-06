@@ -16,7 +16,7 @@ go build -o ms ./cmd
 ./ms
 ```
 
-### Create a new user
+### Create a new user (Server response: 201)
 ```shell script
 curl -X POST \
   http://localhost:8080/users \
@@ -25,7 +25,7 @@ curl -X POST \
 }'
 ```
 
-### Create a game (need a username already created), otherwise 400 will be received
+### Create a game (need a username already created, Server response: 201 otherwise 400 will be sent to the client)
 ```shell script
 curl -X POST \
   http://localhost:8080/games \
@@ -38,7 +38,18 @@ curl -X POST \
 }'
 ```
 
-### Start a game
+### Start a game (Server response: 200, if the game or username are not present, 400 will be sent to the client)
 ```shell script
 localhost:8080/games/game1/users/tomasito
+```
+
+### Play clicking, marking or flagging (click_type might be click, mark or flag, Server response: 200)
+```shell script
+curl -X POST \
+  http://localhost:8080/games/game1/users/tomasito/click \
+  -d '{
+	"row": 1,
+	"col": 3,
+	"click_type": "click"
+}'
 ```

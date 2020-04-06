@@ -10,7 +10,7 @@ var (
 	ErrInvalidJSON = GameError{StatusCode: http.StatusBadRequest, Type: "invalid_json", Message: "Invalid or malformed JSON"}
 	// decide between conflict and bad request
 	ErrAlreadyExists = GameError{StatusCode: http.StatusConflict, Type: "duplicate_entry", Message: "Another entity has the same value as this field"}
-	ErrWrongClick = GameError{StatusCode: http.StatusConflict, Type: "click_not_allowed", Message: "May be a cell clicked twice or an invalid click type"}
+	ErrWrongClick = GameError{StatusCode: http.StatusBadRequest, Type: "click_not_allowed", Message: "May be a cell clicked twice or an invalid click type"}
 )
 
 type GameError struct {
