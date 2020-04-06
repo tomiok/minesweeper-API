@@ -53,3 +53,8 @@ curl -X POST \
 	"click_type": "click"
 }'
 ```
+
+### Demo URL
+```
+http://ms-tomas-api.herokuapp.com/heartbeat
+```
