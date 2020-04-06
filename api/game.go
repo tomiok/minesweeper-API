@@ -48,7 +48,7 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	user.CreatedAt = time.Now()
 	if err := s.userService.CreateUser(&user); err != nil {
 		logs.Log().Error("cannot create user", zap.Error(err))
-		ErrBadRequest.Send(w)
+		ErrAlreadyExists.Send(w)
 		return
 	}
 

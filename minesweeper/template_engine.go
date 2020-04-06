@@ -100,5 +100,6 @@ func flagOrQuestionMarkCell(game *models.Game, i, j int, clickType string) error
 }
 
 func checkWon(game *models.Game) bool {
-	return game.ClickCounter == ((game.Rows * game.Cols) - game.Mines)
+	started := game.Status == "in_progress"
+	return game.ClickCounter == ((game.Rows * game.Cols) - game.Mines) && started
 }
