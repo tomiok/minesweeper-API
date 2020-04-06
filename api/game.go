@@ -7,6 +7,7 @@ import (
 	"github.com/tomiok/minesweeper-API/models"
 	"go.uber.org/zap"
 	"net/http"
+	"time"
 )
 
 func (s *Services) createGameHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +45,7 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user.CreatedAt = time.Now()
 	if err := s.userService.CreateUser(&user); err != nil {
 		logs.Log().Error("cannot create user", zap.Error(err))
 		ErrBadRequest.Send(w)
