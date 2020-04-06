@@ -5,7 +5,7 @@ import "time"
 type MineSweeperGameService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
-	Click(name, clickType string, i, j int) (*Game, error)
+	Click(name, clickType string, i, j int) (*Game, error) //click type [click, flag, mark]
 }
 
 type MineSweeperGameStorage interface {

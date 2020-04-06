@@ -99,6 +99,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logs.Log().Error("cannot click the current cell", zap.Error(err))
+		ErrWrongClick.Send(w)
 		return
 	}
 
