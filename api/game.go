@@ -55,7 +55,7 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	Success(&user, http.StatusCreated).Send(w)
 }
 
-func (s *Services) startGame(w http.ResponseWriter, r *http.Request) {
+func (s *Services) startGameHandler(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	gameID := chi.URLParam(r, "gameID")
 
