@@ -58,3 +58,8 @@ curl -X POST \
 ```
 http://ms-tomas-api.herokuapp.com/heartbeat
 ```
+
+### Check out the CLI for this minesweeper
+```
+https://github.com/nicolasacquaviva/minesweeper-cli
+```
