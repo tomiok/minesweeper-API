@@ -5,58 +5,57 @@ import (
 )
 
 type GameEngineStorage struct {
-	db *DB
+	db DB
 }
 
 type UserStorage struct {
-	db *DB
+	db DB
 }
 
-func NewGameEngineStorage(db *DB) *GameEngineStorage {
+func NewGameEngineStorage(db DB) *GameEngineStorage {
 	return &GameEngineStorage{db: db}
 }
 
-func NewUserStorage(db *DB) *UserStorage {
+func NewUserStorage(db DB) *UserStorage {
 	return &UserStorage{db: db}
 }
 
 func (s *UserStorage) GetByName(username string) (*User, error) {
-	if user, ok := s.db.users[username]; ok {
-		u := *user
+	if user, ok := s.db.Get(username); ok != nil {
+		u := user.(User)
 		return &u, nil
 	}
 	return nil, errors.New("user not found")
 }
 
-
 func (s *UserStorage) Create(user *User) error {
-	if _, ok := s.db.users[user.Username]; ok {
-		return errors.New("user already exist")
+	//TODO add exists here
+	if err := s.db.Save(user.Username, user); err != nil {
+		return errors.New("persistence error")
 	}
-	s.db.users[user.Username] = user
 	return nil
 }
 
 func (s *GameEngineStorage) Create(game *Game) error {
-	if _, ok := s.db.games[game.Name]; ok {
-		return errors.New("game already exist")
+	//TODO add exists here
+	if err := s.db.Save(game.Name, game); err != nil {
+		return errors.New("persistence error")
 	}
-	s.db.games[game.Name] = game
+
 	return nil
 }
 
 func (s *GameEngineStorage) Update(game *Game) error {
 	g := *game
-	if _, ok := s.db.games[game.Name]; !ok {
+	if _, err := s.db.Get(game.Name); err != nil {
 		return errors.New("game do not exist")
 	}
-	s.db.games[game.Name] = &g
-	return nil
+	return s.db.Save(game.Name, &g)
 }
 
 func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
-	if game, ok := s.db.games[name]; ok {
-		g := *game
+	if game, err := s.db.Get(name); err != nil {
+		g := game.(Game)
 		return &g, nil
 	}
 	return nil, errors.New("game not found")

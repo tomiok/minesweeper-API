@@ -33,14 +33,14 @@ func (u *MSUserService) GetUserByName(name string) (*User, error) {
 	return u.MineSweeperUserStorage.GetByName(name)
 }
 
-func NewGameService(db *DB) MineSweeperGameService {
+func NewGameService(db DB) MineSweeperGameService {
 	return &MSGameService{
 		gameStorage: NewGameEngineStorage(db),
 		userService: &MSUserService{NewUserStorage(db)},
 	}
 }
 
-func NewUserService(db *DB) MineSweeperUserService {
+func NewUserService(db DB) MineSweeperUserService {
 	return &MSUserService{
 		NewUserStorage(db),
 	}
