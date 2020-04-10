@@ -25,6 +25,10 @@ func (s *Services) createGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := s.gameService.CreateGame(&game); err != nil {
 		logs.Log().Error("cannot create the game", zap.Error(err))
+		if err.Error() == "user_not_found" {
+			ErrUserNotFound.Send(w)
+			return
+		}
 		ErrBadRequest.Send(w)
 		return
 	}
@@ -61,7 +65,7 @@ func (s *Services) startGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := s.userService.GetUserByName(username); err != nil {
 		logs.Log().Error("user is not present", zap.Error(err))
-		ErrBadRequest.Send(w)
+		ErrUserNotFound.Send(w)
 		return
 	}
 
@@ -84,7 +88,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := s.userService.GetUserByName(username); err != nil {
 		logs.Log().Error("user is not present", zap.Error(err))
-		ErrBadRequest.Send(w)
+		ErrUserNotFound.Send(w)
 		return
 	}
 

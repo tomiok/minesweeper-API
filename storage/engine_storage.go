@@ -26,7 +26,7 @@ func (s *UserStorage) GetByName(username string) (*models.User, error) {
 		u := *user
 		return &u, nil
 	}
-	return nil, errors.New("game not found")
+	return nil, errors.New("user not found")
 }
 
 

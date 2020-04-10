@@ -57,7 +57,7 @@ func (s *MSGameService) CreateGame(game *models.Game) error {
 	_, err := s.userService.GetUserByName(username)
 
 	if err != nil {
-		return errors.New("cannot find username")
+		return errors.New("user_not_found")
 	}
 
 	if game.Name == "" {
