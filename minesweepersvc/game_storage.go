@@ -9,7 +9,8 @@ import (
 
 type DB interface {
 	Save(key string, value interface{}) error
-	Get(key string) (interface{}, error)
+	Get(key string) (*User, error)
+	GetGame(key string) (*Game, error)
 }
 
 type RedisDB struct {
@@ -28,7 +29,7 @@ func (r *RedisDB) Save(key string, value interface{}) error {
 	return err
 }
 
-func (r *RedisDB) Get(key string) (interface{}, error) {
+func (r *RedisDB) Get(key string) (*User, error) {
 	reply, err := redis.String(r.Do("GET", key))
 	logs.Sugar().Infof("%s", reply)
 	var user User
@@ -36,7 +37,18 @@ func (r *RedisDB) Get(key string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return &user, nil
+}
+
+func (r *RedisDB) GetGame(key string) (*Game, error) {
+	reply, err := redis.String(r.Do("GET", key))
+	logs.Sugar().Infof("%s", reply)
+	var game Game
+	err = json.Unmarshal([]byte(reply), &game)
+	if err != nil {
+		return nil, err
+	}
+	return &game, nil
 }
 
 func getConn() redis.Conn {

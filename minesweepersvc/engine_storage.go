@@ -22,8 +22,7 @@ func NewUserStorage(db DB) *UserStorage {
 
 func (s *UserStorage) GetByName(username string) (*User, error) {
 	if user, err := s.db.Get(username); err == nil {
-		u := user.(User)
-		return &u, nil
+		return user, nil
 	}
 	return nil, errors.New("user not found")
 }
@@ -54,9 +53,8 @@ func (s *GameEngineStorage) Update(game *Game) error {
 }
 
 func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
-	if game, err := s.db.Get(name); err != nil {
-		g := game.(Game)
-		return &g, nil
+	if game, err := s.db.GetGame(name); err == nil {
+		return game, nil
 	}
 	return nil, errors.New("game not found")
 }
