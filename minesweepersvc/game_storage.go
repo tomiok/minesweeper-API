@@ -1,6 +1,7 @@
 package minesweepersvc
 
 import (
+	"encoding/json"
 	"github.com/gomodule/redigo/redis"
 	"github.com/tomiok/minesweeper-API/internal/logs"
 	"os"
@@ -22,13 +23,20 @@ func New() DB {
 }
 
 func (r *RedisDB) Save(key string, value interface{}) error {
-	return r.Send("SET", key, value)
+	uJson, _ := json.Marshal(value)
+	_, err := r.Do("SET", key, uJson)
+	return err
 }
 
 func (r *RedisDB) Get(key string) (interface{}, error) {
-	_ = r.Send("GET", key)
-
-	return r.Receive() // reply from GET
+	reply, err := redis.String(r.Do("GET", key))
+	logs.Sugar().Infof("%s", reply)
+	var user User
+	err = json.Unmarshal([]byte(reply), &user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func getConn() redis.Conn {
@@ -39,12 +47,5 @@ func getConn() redis.Conn {
 		logs.Log().Fatal("cannot connect with Redis")
 		panic(err)
 	}
-	err = c.Send("PING")
-
-	if err != nil {
-		logs.Log().Fatal("cannot connect with Redis")
-		panic(err)
-	}
 	return c
 }
-//redis://rediscloud:DTtY29OIKVIk3zDsWsTuSoyZhdFErc6W@redis-12571.c8.us-east-1-4.ec2.cloud.redislabs.com:12571C

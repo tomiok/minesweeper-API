@@ -21,7 +21,7 @@ func NewUserStorage(db DB) *UserStorage {
 }
 
 func (s *UserStorage) GetByName(username string) (*User, error) {
-	if user, ok := s.db.Get(username); ok != nil {
+	if user, err := s.db.Get(username); err == nil {
 		u := user.(User)
 		return &u, nil
 	}
