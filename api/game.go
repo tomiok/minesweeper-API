@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/tomiok/minesweeper-API/internal/logs"
-	"github.com/tomiok/minesweeper-API/models"
+	"github.com/tomiok/minesweeper-API/minesweepersvc"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
 )
 
 func (s *Services) createGameHandler(w http.ResponseWriter, r *http.Request) {
-	var game models.Game
+	var game minesweepersvc.Game
 	body := r.Body
 	defer body.Close()
 
@@ -37,7 +37,7 @@ func (s *Services) createGameHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
-	var user models.User
+	var user minesweepersvc.User
 	body := r.Body
 	defer body.Close()
 
@@ -92,7 +92,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var clickAction models.ClickAction
+	var clickAction minesweepersvc.ClickAction
 	if err := json.NewDecoder(body).Decode(&clickAction); err != nil {
 		ErrInvalidJSON.Send(w)
 		return
@@ -108,8 +108,8 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Res struct {
-		Game    *models.Game        `json:"game"`
-		Clicked *models.ClickAction `json:"clicked"`
+		Game    *minesweepersvc.Game        `json:"game"`
+		Clicked *minesweepersvc.ClickAction `json:"clicked"`
 	}
 
 	res := Res{

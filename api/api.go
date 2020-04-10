@@ -1,21 +1,19 @@
 package api
 
 import (
-	"github.com/tomiok/minesweeper-API/minesweeper"
-	"github.com/tomiok/minesweeper-API/models"
-	"github.com/tomiok/minesweeper-API/storage"
+	"github.com/tomiok/minesweeper-API/minesweepersvc"
 )
 
 type Services struct {
-	gameService models.MineSweeperGameService
-	userService models.MineSweeperUserService
+	gameService minesweepersvc.MineSweeperGameService
+	userService minesweepersvc.MineSweeperUserService
 }
 
 func Start(port string) {
-	db := storage.New()
+	db := minesweepersvc.New()
 	services := &Services{
-		gameService: minesweeper.NewGameService(db),
-		userService: minesweeper.NewUserService(db),
+		gameService: minesweepersvc.NewGameService(db),
+		userService: minesweepersvc.NewUserService(db),
 	}
 
 	r := routes(services)

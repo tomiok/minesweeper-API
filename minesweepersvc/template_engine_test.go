@@ -1,11 +1,10 @@
-package minesweeper
+package minesweepersvc
 
 import (
-	"github.com/tomiok/minesweeper-API/models"
 	"testing"
 )
 
-var game = models.Game{
+var game = Game{
 	Name:         "test_game",
 	Rows:         10,
 	Cols:         10,

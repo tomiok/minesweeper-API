@@ -1,12 +1,10 @@
-// All the interfaces implementations start with MS (for minesweeper)
-package minesweeper
+// All the interfaces implementations start with MS (for minesweepersvc)
+package minesweepersvc
 
 import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/tomiok/minesweeper-API/internal/logs"
-	"github.com/tomiok/minesweeper-API/models"
-	"github.com/tomiok/minesweeper-API/storage"
 )
 
 const (
@@ -19,36 +17,36 @@ const (
 )
 
 type MSGameService struct {
-	gameStorage models.MineSweeperGameStorage
-	userService models.MineSweeperUserService
+	gameStorage MineSweeperGameStorage
+	userService MineSweeperUserService
 }
 
 type MSUserService struct {
-	models.MineSweeperUserStorage
+	MineSweeperUserStorage
 }
 
-func (u *MSUserService) CreateUser(user *models.User) error {
+func (u *MSUserService) CreateUser(user *User) error {
 	return u.MineSweeperUserStorage.Create(user)
 }
 
-func (u *MSUserService) GetUserByName(name string) (*models.User, error) {
+func (u *MSUserService) GetUserByName(name string) (*User, error) {
 	return u.MineSweeperUserStorage.GetByName(name)
 }
 
-func NewGameService(db *storage.DB) models.MineSweeperGameService {
+func NewGameService(db *DB) MineSweeperGameService {
 	return &MSGameService{
-		gameStorage: storage.NewGameEngineStorage(db),
-		userService: &MSUserService{storage.NewUserStorage(db)},
+		gameStorage: NewGameEngineStorage(db),
+		userService: &MSUserService{NewUserStorage(db)},
 	}
 }
 
-func NewUserService(db *storage.DB) models.MineSweeperUserService {
+func NewUserService(db *DB) MineSweeperUserService {
 	return &MSUserService{
-		storage.NewUserStorage(db),
+		NewUserStorage(db),
 	}
 }
 
-func (s *MSGameService) CreateGame(game *models.Game) error {
+func (s *MSGameService) CreateGame(game *Game) error {
 	username := game.Username
 	if username == "" {
 		return errors.New("username empty is not allowed")
@@ -95,7 +93,7 @@ func (s *MSGameService) CreateGame(game *models.Game) error {
 	return err
 }
 
-func (s *MSGameService) Start(name string) (*models.Game, error) {
+func (s *MSGameService) Start(name string) (*Game, error) {
 	game, err := s.gameStorage.GetByName(name)
 	if err != nil {
 		return nil, err
@@ -109,7 +107,7 @@ func (s *MSGameService) Start(name string) (*models.Game, error) {
 	return game, err
 }
 
-func (s *MSGameService) Click(name, clickType string, i, j int) (*models.Game, error) {
+func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 	game, err := s.gameStorage.GetByName(name)
 	if err != nil {
 		return nil, err

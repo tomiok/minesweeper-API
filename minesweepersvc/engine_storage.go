@@ -1,8 +1,7 @@
-package storage
+package minesweepersvc
 
 import (
 	"errors"
-	"github.com/tomiok/minesweeper-API/models"
 )
 
 type GameEngineStorage struct {
@@ -21,7 +20,7 @@ func NewUserStorage(db *DB) *UserStorage {
 	return &UserStorage{db: db}
 }
 
-func (s *UserStorage) GetByName(username string) (*models.User, error) {
+func (s *UserStorage) GetByName(username string) (*User, error) {
 	if user, ok := s.db.users[username]; ok {
 		u := *user
 		return &u, nil
@@ -30,7 +29,7 @@ func (s *UserStorage) GetByName(username string) (*models.User, error) {
 }
 
 
-func (s *UserStorage) Create(user *models.User) error {
+func (s *UserStorage) Create(user *User) error {
 	if _, ok := s.db.users[user.Username]; ok {
 		return errors.New("user already exist")
 	}
@@ -38,7 +37,7 @@ func (s *UserStorage) Create(user *models.User) error {
 	return nil
 }
 
-func (s *GameEngineStorage) Create(game *models.Game) error {
+func (s *GameEngineStorage) Create(game *Game) error {
 	if _, ok := s.db.games[game.Name]; ok {
 		return errors.New("game already exist")
 	}
@@ -46,7 +45,7 @@ func (s *GameEngineStorage) Create(game *models.Game) error {
 	return nil
 }
 
-func (s *GameEngineStorage) Update(game *models.Game) error {
+func (s *GameEngineStorage) Update(game *Game) error {
 	g := *game
 	if _, ok := s.db.games[game.Name]; !ok {
 		return errors.New("game do not exist")
@@ -55,7 +54,7 @@ func (s *GameEngineStorage) Update(game *models.Game) error {
 	return nil
 }
 
-func (s *GameEngineStorage) GetByName(name string) (*models.Game, error) {
+func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
 	if game, ok := s.db.games[name]; ok {
 		g := *game
 		return &g, nil

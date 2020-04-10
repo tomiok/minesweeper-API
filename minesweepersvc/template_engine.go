@@ -1,8 +1,7 @@
-package minesweeper
+package minesweepersvc
 
 import (
 	"errors"
-	"github.com/tomiok/minesweeper-API/models"
 	"math/rand"
 	"time"
 )
@@ -11,9 +10,9 @@ func init() {
 	rand.Seed(time.Now().Unix())
 }
 
-func buildBoard(game *models.Game) {
+func buildBoard(game *Game) {
 	numCells := game.Cols * game.Rows
-	cells := make(models.CellGrid, numCells)
+	cells := make(CellGrid, numCells)
 
 	// Randomly set mines
 	i := 0
@@ -25,7 +24,7 @@ func buildBoard(game *models.Game) {
 		}
 	}
 
-	game.Grid = make([]models.CellGrid, game.Rows)
+	game.Grid = make([]CellGrid, game.Rows)
 	for row := range game.Grid {
 		game.Grid[row] = cells[(game.Cols * row):(game.Cols * (row + 1))]
 	}
@@ -40,7 +39,7 @@ func buildBoard(game *models.Game) {
 	}
 }
 
-func setAdjacentValues(game *models.Game, i, j int) {
+func setAdjacentValues(game *Game, i, j int) {
 	for z := i - 1; z < i+2; z++ {
 		if z < 0 || z > game.Rows-1 {
 			continue
@@ -57,7 +56,7 @@ func setAdjacentValues(game *models.Game, i, j int) {
 	}
 }
 
-func clickCell(game *models.Game, i, j int) error {
+func clickCell(game *Game, i, j int) error {
 	if game.Grid[i][j].Clicked {
 		return errors.New("cell already clicked")
 	}
@@ -74,7 +73,7 @@ func clickCell(game *models.Game, i, j int) error {
 	return nil
 }
 
-func flagOrQuestionMarkCell(game *models.Game, i, j int, clickType string) error {
+func flagOrQuestionMarkCell(game *Game, i, j int, clickType string) error {
 	switch clickType {
 	// assume that a flagged cell could change to marked or vice versa
 	case "flag":
@@ -99,7 +98,7 @@ func flagOrQuestionMarkCell(game *models.Game, i, j int, clickType string) error
 	return nil
 }
 
-func checkWon(game *models.Game) bool {
+func checkWon(game *Game) bool {
 	started := game.Status == "in_progress"
 	return game.ClickCounter == ((game.Rows * game.Cols) - game.Mines) && started
 }
