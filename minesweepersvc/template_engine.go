@@ -57,7 +57,7 @@ func setAdjacentValues(game *Game, i, j int) {
 }
 
 func clickCell(game *Game, i, j int) error {
-	if game.Grid[i][j].Clicked {
+	if clicked(game, i, j) {
 		return errors.New("cell already clicked")
 	}
 	game.Grid[i][j].Clicked = true
@@ -74,6 +74,9 @@ func clickCell(game *Game, i, j int) error {
 }
 
 func flagOrQuestionMarkCell(game *Game, i, j int, clickType string) error {
+	if clicked(game, i, j) {
+		return errors.New("cell already clicked")
+	}
 	switch clickType {
 	// assume that a flagged cell could change to marked or vice versa
 	case "flag":
@@ -90,15 +93,15 @@ func flagOrQuestionMarkCell(game *Game, i, j int, clickType string) error {
 		return errors.New("unknown event")
 	}
 
-	game.ClickCounter += 1
-	if checkWon(game) {
-		game.Status = gameStatus.won
-	}
-
+	//cannot check won, you need to click those not only mark or flag
 	return nil
 }
 
 func checkWon(game *Game) bool {
 	started := game.Status() == gameStatus.inProgress()
 	return game.ClickCounter == ((game.Rows*game.Cols)-game.Mines) && started
+}
+
+func clicked(game *Game, i, j int) bool {
+	return game.Grid[i][j].Clicked
 }
