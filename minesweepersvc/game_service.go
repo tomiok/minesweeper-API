@@ -1,10 +1,10 @@
-// All the interfaces implementations start with MS (for minesweepersvc)
 package minesweepersvc
 
 import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/tomiok/minesweeper-API/internal/logs"
+	"time"
 )
 
 const (
@@ -15,6 +15,81 @@ const (
 	maxRows      = 30
 	maxCols      = 30
 )
+
+type status struct{}
+
+var gameStatus status
+
+type statuses func() string
+type CellGrid []Cell
+
+type Cell struct {
+	Mine    bool `json:"mine"`
+	Clicked bool `json:"clicked"`
+	Value   int  `json:"value"`
+	Flagged bool `json:"flagged"` // add a red flag in the cell
+	Marked  bool `json:"marked"`  // add a question mark
+}
+
+type Game struct {
+	Name         string     `json:"name"`
+	Rows         int        `json:"rows"`
+	Cols         int        `json:"cols"`
+	Mines        int        `json:"mines"`
+	Status       statuses   `json:"status"` //new, in_progress, won, lost
+	Grid         []CellGrid `json:"grid,omitempty"`
+	ClickCounter int        `json:"-"`
+	Username     string     `json:"username"`
+}
+
+type User struct {
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"-"`
+}
+
+type ClickAction struct {
+	Row       int    `json:"row"`
+	Col       int    `json:"col"`
+	ClickType string `json:"click_type"`
+}
+
+func (s status) new() string {
+	return "new"
+}
+
+func (s status) won() string {
+	return "won"
+}
+
+func (s status) inProgress() string {
+	return "in_progress"
+}
+
+func (s status) lost() string {
+	return "lost"
+}
+
+type MineSweeperGameService interface {
+	CreateGame(game *Game) error
+	Start(name string) (*Game, error)
+	Click(name, clickType string, i, j int) (*Game, error) //click type [click, flag, mark]
+}
+
+type MineSweeperGameStorage interface {
+	Create(game *Game) error
+	Update(game *Game) error
+	GetByName(name string) (*Game, error)
+}
+
+type MineSweeperUserService interface {
+	CreateUser(u *User) error
+	GetUserByName(username string) (*User, error)
+}
+
+type MineSweeperUserStorage interface {
+	Create(u *User) error
+	GetByName(username string) (*User, error)
+}
 
 type MSGameService struct {
 	gameStorage MineSweeperGameStorage
@@ -87,7 +162,7 @@ func (s *MSGameService) CreateGame(game *Game) error {
 	if game.Mines > (game.Cols * game.Rows) {
 		game.Mines = game.Cols * game.Rows
 	}
-	game.Status = "new"
+	game.Status = gameStatus.new
 
 	err = s.gameStorage.Create(game)
 	return err
@@ -101,7 +176,7 @@ func (s *MSGameService) Start(name string) (*Game, error) {
 
 	buildBoard(game)
 
-	game.Status = "in_progress"
+	game.Status = gameStatus.inProgress
 	err = s.gameStorage.Update(game)
 	logs.Sugar().Infof("%#v\n", game.Grid)
 	return game, err

@@ -62,12 +62,12 @@ func clickCell(game *Game, i, j int) error {
 	}
 	game.Grid[i][j].Clicked = true
 	if game.Grid[i][j].Mine {
-		game.Status = "lost"
+		game.Status = gameStatus.lost
 		return nil
 	}
 	game.ClickCounter += 1
 	if checkWon(game) {
-		game.Status = "won"
+		game.Status = gameStatus.won
 	}
 
 	return nil
@@ -92,13 +92,13 @@ func flagOrQuestionMarkCell(game *Game, i, j int, clickType string) error {
 
 	game.ClickCounter += 1
 	if checkWon(game) {
-		game.Status = "won"
+		game.Status = gameStatus.won
 	}
 
 	return nil
 }
 
 func checkWon(game *Game) bool {
-	started := game.Status == "in_progress"
-	return game.ClickCounter == ((game.Rows * game.Cols) - game.Mines) && started
+	started := game.Status() == gameStatus.inProgress()
+	return game.ClickCounter == ((game.Rows*game.Cols)-game.Mines) && started
 }
