@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gomodule/redigo/redis"
 	"github.com/tomiok/minesweeper-API/internal/logs"
+	"go.uber.org/zap"
 	"os"
 )
 
@@ -24,8 +25,13 @@ func New() DB {
 }
 
 func (r *RedisDB) Save(key string, value interface{}) error {
-	uJson, _ := json.Marshal(value)
-	_, err := r.Do("SET", key, uJson)
+	uJson, err := json.Marshal(value)
+
+	if err != nil {
+		logs.Log().Error("cannot marshal current structure", zap.Error(err))
+		return err
+	}
+	_, err = r.Do("SET", key, uJson)
 	return err
 }
 

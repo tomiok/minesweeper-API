@@ -33,7 +33,7 @@ func (s *Services) createGameHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Success(game, http.StatusCreated).Send(w)
+	Success(&game, http.StatusCreated).Send(w)
 }
 
 func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {

@@ -36,7 +36,8 @@ type Game struct {
 	Rows         int        `json:"rows"`
 	Cols         int        `json:"cols"`
 	Mines        int        `json:"mines"`
-	Status       statuses   `json:"status"` //new, in_progress, won, lost
+	Status       statuses   `json:"-"` //new, in_progress, won, lost
+	S            string     `json:"status"`
 	Grid         []CellGrid `json:"grid,omitempty"`
 	ClickCounter int        `json:"-"`
 	Username     string     `json:"username"`
@@ -163,6 +164,7 @@ func (s *MSGameService) CreateGame(game *Game) error {
 		game.Mines = game.Cols * game.Rows
 	}
 	game.Status = gameStatus.new
+	game.S = game.Status()
 
 	err = s.gameStorage.Create(game)
 	return err
@@ -177,6 +179,7 @@ func (s *MSGameService) Start(name string) (*Game, error) {
 	buildBoard(game)
 
 	game.Status = gameStatus.inProgress
+	game.S = game.Status()
 	err = s.gameStorage.Update(game)
 	logs.Sugar().Infof("%#v\n", game.Grid)
 	return game, err

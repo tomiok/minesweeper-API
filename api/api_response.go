@@ -12,11 +12,13 @@ type ResponseAPI struct {
 }
 
 func Success(result interface{}, status int) *ResponseAPI {
-	return &ResponseAPI{
+	res := &ResponseAPI{
 		Success: true,
 		Status:  status,
 		Result:  result,
 	}
+
+	return res
 }
 func (r *ResponseAPI) Send(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")

@@ -21,10 +21,11 @@ func NewUserStorage(db DB) *UserStorage {
 }
 
 func (s *UserStorage) GetByName(username string) (*User, error) {
-	if user, err := s.db.Get(username); err == nil {
-		return user, nil
+	user, err := s.db.Get(username)
+	if err != nil {
+		return nil, errors.New("user not found")
 	}
-	return nil, errors.New("user not found")
+	return user, nil
 }
 
 func (s *UserStorage) Create(user *User) error {
@@ -40,21 +41,21 @@ func (s *GameEngineStorage) Create(game *Game) error {
 	if err := s.db.Save(game.Name, game); err != nil {
 		return errors.New("persistence error")
 	}
-
 	return nil
 }
 
 func (s *GameEngineStorage) Update(game *Game) error {
-	g := *game
 	if _, err := s.db.Get(game.Name); err != nil {
 		return errors.New("game do not exist")
 	}
-	return s.db.Save(game.Name, &g)
+	return s.db.Save(game.Name, game)
 }
 
 func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
-	if game, err := s.db.GetGame(name); err == nil {
-		return game, nil
+	game, err := s.db.GetGame(name)
+	if err == nil {
+		return nil, errors.New("game not found")
 	}
-	return nil, errors.New("game not found")
+	return game, nil
+
 }

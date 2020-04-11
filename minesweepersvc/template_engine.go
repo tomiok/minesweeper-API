@@ -63,11 +63,13 @@ func clickCell(game *Game, i, j int) error {
 	game.Grid[i][j].Clicked = true
 	if game.Grid[i][j].Mine {
 		game.Status = gameStatus.lost
+		game.S = game.Status()
 		return nil
 	}
 	game.ClickCounter += 1
 	if checkWon(game) {
 		game.Status = gameStatus.won
+		game.S = game.Status()
 	}
 
 	return nil
