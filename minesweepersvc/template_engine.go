@@ -2,6 +2,7 @@ package minesweepersvc
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -27,6 +28,12 @@ func buildBoard(game *Game) {
 	game.Grid = make([]CellGrid, game.Rows)
 	for row := range game.Grid {
 		game.Grid[row] = cells[(game.Cols * row):(game.Cols * (row + 1))]
+	}
+
+	for row, col := range game.Grid {
+		for c := range col {
+			game.Grid[row][c].Coordinates = fmt.Sprintf("row: %d, col:%d", row, c)
+		}
 	}
 }
 
