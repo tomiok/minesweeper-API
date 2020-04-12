@@ -12,6 +12,7 @@ type DB interface {
 	Save(key string, value interface{}) error
 	Get(key string) (*User, error)
 	GetGame(key string) (*Game, error)
+	Exists(key string) bool
 }
 
 type RedisDB struct {
@@ -55,6 +56,17 @@ func (r *RedisDB) GetGame(key string) (*Game, error) {
 		return nil, err
 	}
 	return &game, nil
+}
+
+func (r *RedisDB) Exists(key string) bool {
+	reply, err := redis.Int(r.Do("EXISTS", key))
+
+	if err != nil {
+		logs.Log().Error("cannot fetch value with exists command")
+		return false
+	}
+
+	return reply > 0
 }
 
 func getConn() redis.Conn {
