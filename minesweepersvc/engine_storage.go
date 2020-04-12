@@ -53,7 +53,7 @@ func (s *GameEngineStorage) Update(game *Game) error {
 
 func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
 	game, err := s.db.GetGame(name)
-	if err == nil {
+	if err != nil {
 		return nil, errors.New("game not found")
 	}
 	return game, nil

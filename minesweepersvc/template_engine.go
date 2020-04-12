@@ -28,32 +28,6 @@ func buildBoard(game *Game) {
 	for row := range game.Grid {
 		game.Grid[row] = cells[(game.Cols * row):(game.Cols * (row + 1))]
 	}
-
-	// Set cell values
-	for i, row := range game.Grid {
-		for j, cell := range row {
-			if cell.Mine {
-				setAdjacentValues(game, i, j)
-			}
-		}
-	}
-}
-
-func setAdjacentValues(game *Game, i, j int) {
-	for z := i - 1; z < i+2; z++ {
-		if z < 0 || z > game.Rows-1 {
-			continue
-		}
-		for w := j - 1; w < j+2; w++ {
-			if w < 0 || w > game.Cols-1 {
-				continue
-			}
-			if z == i && w == j {
-				continue
-			}
-			game.Grid[z][w].Value++
-		}
-	}
 }
 
 func clickCell(game *Game, i, j int) error {
@@ -100,6 +74,9 @@ func flagOrQuestionMarkCell(game *Game, i, j int, clickType string) error {
 }
 
 func checkWon(game *Game) bool {
+	if game.Status == nil {
+		return false
+	}
 	started := game.Status() == gameStatus.inProgress()
 	return game.ClickCounter == ((game.Rows*game.Cols)-game.Mines) && started
 }
