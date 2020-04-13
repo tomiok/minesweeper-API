@@ -51,8 +51,12 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	user.CreatedAt = time.Now()
 	if err := s.userService.CreateUser(&user); err != nil {
-		logs.Log().Error("cannot create user", zap.Error(err))
-		ErrAlreadyExists.Send(w)
+		if err.Error() == "already_exists" {
+			logs.Log().Error("user already exists")
+			ErrAlreadyExists.Send(w)
+			return
+		}
+		ErrBadRequest.Send(w)
 		return
 	}
 
@@ -107,7 +111,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if game.S == "lost" {
+	if checkLost(game.S) {
 		LostGame(game.ClickCounter, username).Send(w)
 		return
 	}
@@ -123,4 +127,12 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Success(&res, http.StatusOK).Send(w)
+}
+
+func (s *Services) pruneCacheHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func checkLost(status string) bool {
+	return status == "lost"
 }

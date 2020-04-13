@@ -29,7 +29,10 @@ func (s *UserStorage) GetByName(username string) (*User, error) {
 }
 
 func (s *UserStorage) Create(user *User) error {
-	//TODO add exists here
+	if s.db.Exists(user.Username) {
+		return errors.New("already_exists")
+	}
+
 	if err := s.db.Save(user.Username, user); err != nil {
 		return errors.New("persistence error")
 	}
@@ -37,9 +40,12 @@ func (s *UserStorage) Create(user *User) error {
 }
 
 func (s *GameEngineStorage) Create(game *Game) error {
-	//TODO add exists here
+	if s.db.Exists(game.Name) && game.S == "in_progress" {
+		return errors.New("already_exists")
+	}
+
 	if err := s.db.Save(game.Name, game); err != nil {
-		return errors.New("persistence error")
+		return errors.New("persistence_error")
 	}
 	return nil
 }
@@ -53,7 +59,7 @@ func (s *GameEngineStorage) Update(game *Game) error {
 
 func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
 	game, err := s.db.GetGame(name)
-	if err != nil {
+	if err != nil || game == nil {
 		return nil, errors.New("game not found")
 	}
 	return game, nil
