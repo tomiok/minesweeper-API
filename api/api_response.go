@@ -12,16 +12,31 @@ type ResponseAPI struct {
 }
 
 func Success(result interface{}, status int) *ResponseAPI {
-	res := &ResponseAPI{
+	return &ResponseAPI{
 		Success: true,
 		Status:  status,
 		Result:  result,
 	}
-
-	return res
 }
+
 func (r *ResponseAPI) Send(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(r.Status)
 	return json.NewEncoder(w).Encode(r)
+}
+
+func LostGame(clicks int, username string) *ResponseAPI {
+	return &ResponseAPI{
+		Success: true,
+		Status:  http.StatusOK,
+		Result: &LostResponse{
+			Message: "You lost, " + username,
+			Clicks:  clicks,
+		},
+	}
+}
+
+type LostResponse struct {
+	Message string `json:"message"`
+	Clicks  int    `json:"clicks"`
 }

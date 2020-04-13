@@ -107,6 +107,11 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if game.S == "lost" {
+		LostGame(game.ClickCounter, username).Send(w)
+		return
+	}
+
 	type Res struct {
 		Game    *minesweepersvc.Game        `json:"game"`
 		Clicked *minesweepersvc.ClickAction `json:"clicked"`
