@@ -10,7 +10,7 @@ type Services struct {
 }
 
 func Start(port string) {
-	db := minesweepersvc.New()
+	db := minesweepersvc.NewDB()
 	services := &Services{
 		gameService: minesweepersvc.NewGameService(db),
 		userService: minesweepersvc.NewUserService(db),

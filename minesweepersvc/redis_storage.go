@@ -19,7 +19,7 @@ type RedisDB struct {
 	redis.Conn
 }
 
-func New() DB {
+func NewDB() DB {
 	return &RedisDB{
 		getConn(),
 	}

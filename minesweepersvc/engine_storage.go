@@ -8,19 +8,11 @@ type GameEngineStorage struct {
 	db DB
 }
 
-type UserStorage struct {
-	db DB
-}
-
 func NewGameEngineStorage(db DB) *GameEngineStorage {
 	return &GameEngineStorage{db: db}
 }
 
-func NewUserStorage(db DB) *UserStorage {
-	return &UserStorage{db: db}
-}
-
-func (s *UserStorage) GetByName(username string) (*User, error) {
+func (s *GameEngineStorage) GetUser(username string) (*User, error) {
 	user, err := s.db.Get(username)
 	if err != nil {
 		return nil, errors.New("user not found")
@@ -28,7 +20,7 @@ func (s *UserStorage) GetByName(username string) (*User, error) {
 	return user, nil
 }
 
-func (s *UserStorage) Create(user *User) error {
+func (s *GameEngineStorage) CreateUser(user *User) error {
 	if s.db.Exists(user.Username) {
 		return errors.New("already_exists")
 	}
@@ -39,7 +31,7 @@ func (s *UserStorage) Create(user *User) error {
 	return nil
 }
 
-func (s *GameEngineStorage) Create(game *Game) error {
+func (s *GameEngineStorage) CreateGame(game *Game) error {
 	if s.db.Exists(game.Name) && game.S == "in_progress" {
 		return errors.New("already_exists")
 	}
@@ -57,7 +49,7 @@ func (s *GameEngineStorage) Update(game *Game) error {
 	return s.db.Save(game.Name, game)
 }
 
-func (s *GameEngineStorage) GetByName(name string) (*Game, error) {
+func (s *GameEngineStorage) GetGame(name string) (*Game, error) {
 	game, err := s.db.GetGame(name)
 	if err != nil || game == nil {
 		return nil, errors.New("game not found")

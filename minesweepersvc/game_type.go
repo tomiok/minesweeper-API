@@ -14,6 +14,11 @@ const (
 	maxMines     = 25
 	maxRows      = 30
 	maxCols      = 30
+	Click        = "click"
+	InProgress   = "in_progress"
+	Lost         = "lost"
+	New          = "new"
+	Won          = "won"
 )
 
 type status struct{}
@@ -54,22 +59,6 @@ type ClickAction struct {
 	ClickType string `json:"click_type"`
 }
 
-func (s status) new() string {
-	return "new"
-}
-
-func (s status) won() string {
-	return "won"
-}
-
-func (s status) inProgress() string {
-	return "in_progress"
-}
-
-func (s status) lost() string {
-	return "lost"
-}
-
 type MineSweeperGameService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
@@ -77,19 +66,16 @@ type MineSweeperGameService interface {
 }
 
 type MineSweeperGameStorage interface {
-	Create(game *Game) error
+	CreateGame(game *Game) error
 	Update(game *Game) error
-	GetByName(name string) (*Game, error)
+	GetGame(name string) (*Game, error)
+	CreateUser(u *User) error
+	GetUser(username string) (*User, error)
 }
 
 type MineSweeperUserService interface {
 	CreateUser(u *User) error
 	GetUserByName(username string) (*User, error)
-}
-
-type MineSweeperUserStorage interface {
-	Create(u *User) error
-	GetByName(username string) (*User, error)
 }
 
 type MSGameService struct {
@@ -98,27 +84,43 @@ type MSGameService struct {
 }
 
 type MSUserService struct {
-	MineSweeperUserStorage
+	MineSweeperGameStorage
+}
+
+func (s status) new() string {
+	return New
+}
+
+func (s status) won() string {
+	return Won
+}
+
+func (s status) inProgress() string {
+	return InProgress
+}
+
+func (s status) lost() string {
+	return Lost
 }
 
 func (u *MSUserService) CreateUser(user *User) error {
-	return u.MineSweeperUserStorage.Create(user)
+	return u.MineSweeperGameStorage.CreateUser(user)
 }
 
-func (u *MSUserService) GetUserByName(name string) (*User, error) {
-	return u.MineSweeperUserStorage.GetByName(name)
+func (u *MSUserService) GetUserByName(username string) (*User, error) {
+	return u.MineSweeperGameStorage.GetUser(username)
 }
 
 func NewGameService(db DB) MineSweeperGameService {
 	return &MSGameService{
 		gameStorage: NewGameEngineStorage(db),
-		userService: &MSUserService{NewUserStorage(db)},
+		userService: &MSUserService{NewGameEngineStorage(db)},
 	}
 }
 
 func NewUserService(db DB) MineSweeperUserService {
 	return &MSUserService{
-		NewUserStorage(db),
+		NewGameEngineStorage(db),
 	}
 }
 
@@ -166,12 +168,12 @@ func (s *MSGameService) CreateGame(game *Game) error {
 	game.Status = gameStatus.new
 	game.S = game.Status()
 
-	err = s.gameStorage.Create(game)
+	err = s.gameStorage.CreateGame(game)
 	return err
 }
 
 func (s *MSGameService) Start(name string) (*Game, error) {
-	game, err := s.gameStorage.GetByName(name)
+	game, err := s.gameStorage.GetGame(name)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +188,7 @@ func (s *MSGameService) Start(name string) (*Game, error) {
 }
 
 func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
-	game, err := s.gameStorage.GetByName(name)
+	game, err := s.gameStorage.GetGame(name)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +211,7 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 }
 
 func isNormalClick(clickType string) bool {
-	return clickType == "click"
+	return clickType == Click
 }
 
 func getUUIDName() string {
