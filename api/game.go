@@ -75,7 +75,7 @@ func (s *Services) startGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	game, err := s.gameService.Start(gameID)
 	if err != nil {
-		logs.Log().Error("cannot start game	", zap.Error(err))
+		logs.Log().Error("cannot start game", zap.Error(err))
 		ErrBadRequest.Send(w)
 		return
 	}
@@ -111,7 +111,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if checkLost(game.S) {
+	if minesweepersvc.CheckLost(game.S) {
 		LostGame(game.ClickCounter, username).Send(w)
 		return
 	}
@@ -130,9 +130,12 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Services) pruneCacheHandler(w http.ResponseWriter, r *http.Request) {
+	err := s.gameService.Reset()
 
-}
+	if err != nil {
+		ErrBadRequest.Send(w)
+		return
+	}
 
-func checkLost(status string) bool {
-	return status == "lost"
+	Success(nil, http.StatusOK).Send(w)
 }

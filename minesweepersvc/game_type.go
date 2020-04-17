@@ -63,6 +63,7 @@ type MineSweeperGameService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
 	Click(name, clickType string, i, j int) (*Game, error) //click type [click, flag, mark]
+	Reset() error
 }
 
 type MineSweeperGameStorage interface {
@@ -210,10 +211,19 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 	return game, nil
 }
 
+func (s *MSGameService) Reset() error {
+
+	return nil
+}
+
 func isNormalClick(clickType string) bool {
 	return clickType == Click
 }
 
 func getUUIDName() string {
 	return uuid.New().String()
+}
+
+func CheckLost(status string) bool {
+	return status == "lost"
 }

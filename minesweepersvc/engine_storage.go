@@ -55,5 +55,4 @@ func (s *GameEngineStorage) GetGame(name string) (*Game, error) {
 		return nil, errors.New("game not found")
 	}
 	return game, nil
-
 }
