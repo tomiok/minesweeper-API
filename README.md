@@ -16,12 +16,12 @@ go test -v ./...
 
 ### Build the API
 ```shell script
-go build -o ms ./cmd
+go build -o ms-api cmd/main.go
 ```
 
 ### Run the API
 ```shell script
-./ms
+./ms-api
 ```
 
 ## With Docker compose
