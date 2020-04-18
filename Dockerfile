@@ -1,9 +1,9 @@
-FROM golang:1.14.2-alpine3.11
+FROM golang:1.14.2
 
 RUN mkdir /app
 ADD . /app
 WORKDIR /app
 
-RUN go build -o ms-api cmd/main.go
+RUN make build
 EXPOSE 8080
 CMD ["./ms-api"]
