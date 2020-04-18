@@ -5,7 +5,6 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/tomiok/minesweeper-API/internal/logs"
 	"go.uber.org/zap"
-	"os"
 )
 
 type DB interface {
@@ -70,9 +69,14 @@ func (r *RedisDB) Exists(key string) bool {
 }
 
 func getConn() redis.Conn {
-	redisURL := os.Getenv("REDISCLOUD_URL")
-	logs.Log().Info(redisURL)
-	c, err := redis.DialURL(redisURL)
+	logs.Log().Info("connecting redis...")
+	//redisURL := os.Getenv("REDISCLOUD_URL")
+
+	logs.Log().Info("localhost:6379")
+
+//redis://rediscloud:DTtY29OIKVIk3zDsWsTuSoyZhdFErc6W@redis-12571.c8.us-east-1-4.ec2.cloud.redislabs.com:12571
+
+	c, err := redis.DialURL("redis://redis:6379")
 	if err != nil {
 		logs.Log().Fatal("cannot connect with Redis")
 		panic(err)
