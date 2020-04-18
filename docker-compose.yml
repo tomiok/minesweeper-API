@@ -9,7 +9,7 @@ services:
     links:
       - redis
     environment: # Pass environment variables to the service
-      REDISCLOUD_URL: "redis:6379"
+      REDIS_LOCAL_URL: "redis:6379"
     networks:
       - backend
   redis:

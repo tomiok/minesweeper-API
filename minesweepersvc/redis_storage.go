@@ -2,9 +2,11 @@ package minesweepersvc
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"github.com/tomiok/minesweeper-API/internal/logs"
 	"go.uber.org/zap"
+	"os"
 )
 
 type DB interface {
@@ -70,11 +72,14 @@ func (r *RedisDB) Exists(key string) bool {
 
 func getConn() redis.Conn {
 	logs.Log().Info("connecting redis...")
-	//redisURL := os.Getenv("REDISCLOUD_URL")
+	redisURL := os.Getenv("REDISCLOUD_URL")
 
-	logs.Log().Info("localhost:6379")
-
-	c, err := redis.DialURL("redis://redis:6379")
+	if redisURL == "" {
+		localURL := os.Getenv("REDIS_LOCAL_URL")
+		redisURL = fmt.Sprintf("redis://%s", localURL)
+	}
+	//"redis://redis:6379"
+	c, err := redis.DialURL(redisURL)
 	if err != nil {
 		logs.Log().Fatal("cannot connect with Redis")
 		panic(err)
