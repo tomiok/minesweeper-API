@@ -14,6 +14,7 @@ type DB interface {
 	Get(key string) (*User, error)
 	GetGame(key string) (*Game, error)
 	Exists(key string) bool
+	FlushAll() error
 }
 
 type RedisDB struct {
@@ -70,6 +71,12 @@ func (r *RedisDB) Exists(key string) bool {
 	return reply > 0
 }
 
+func (r *RedisDB) FlushAll() error {
+	s, err := redis.String(r.Do("FLUSHALL"))
+	logs.Log().Info("flushed with reply: ", zap.String("reply", s))
+	return err
+}
+
 func getConn() redis.Conn {
 	logs.Log().Info("connecting redis...")
 	redisURL := os.Getenv("REDISCLOUD_URL")
@@ -78,7 +85,7 @@ func getConn() redis.Conn {
 		localURL := os.Getenv("REDIS_LOCAL_URL")
 		redisURL = fmt.Sprintf("redis://%s", localURL)
 	}
-	//"redis://redis:6379"
+	//format url ==> "redis://redis:6379"
 	c, err := redis.DialURL(redisURL)
 	if err != nil {
 		logs.Log().Fatal("cannot connect with Redis")

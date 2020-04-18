@@ -15,6 +15,7 @@ func routes(services *Services) *chi.Mux {
 	r.Post("/games", services.createGameHandler)
 	r.Post("/games/{gameID}/users/{username}", services.startGameHandler)
 	r.Post("/games/{gameID}/users/{username}/click", services.clickHandler)
+	r.Get("/configs/flush-cache", services.flushCacheHandler)
 
 	return r
 }

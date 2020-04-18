@@ -129,8 +129,8 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 	Success(&res, http.StatusOK).Send(w)
 }
 
-func (s *Services) pruneCacheHandler(w http.ResponseWriter, r *http.Request) {
-	err := s.gameService.Reset()
+func (s *Services) flushCacheHandler(w http.ResponseWriter, r *http.Request) {
+	err := s.gameService.Flush()
 
 	if err != nil {
 		ErrBadRequest.Send(w)

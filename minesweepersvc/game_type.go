@@ -63,7 +63,7 @@ type MineSweeperGameService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
 	Click(name, clickType string, i, j int) (*Game, error) //click type [click, flag, mark]
-	Reset() error
+	Flush() error
 }
 
 type MineSweeperGameStorage interface {
@@ -72,6 +72,7 @@ type MineSweeperGameStorage interface {
 	GetGame(name string) (*Game, error)
 	CreateUser(u *User) error
 	GetUser(username string) (*User, error)
+	Flush() error
 }
 
 type MineSweeperUserService interface {
@@ -211,9 +212,8 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 	return game, nil
 }
 
-func (s *MSGameService) Reset() error {
-
-	return nil
+func (s *MSGameService) Flush() error {
+	return s.gameStorage.Flush()
 }
 
 func isNormalClick(clickType string) bool {
