@@ -1,6 +1,14 @@
 ## Minesweeper API
 ------------------------------------------------------------
 
+This is a basic API for the game Minesweeper. Written in Golang and using Redis for storage.
+
+For build it locally, you might need Redis installed locally, otherwise, use docker-compose to run via make command,
+or directly run with *docker-compose*
+
+
+## Using golang and remote Redis.
+
 ### Run the tests
 ```shell script
 go test -v ./...
@@ -14,6 +22,30 @@ go build -o ms ./cmd
 ### Run the API
 ```shell script
 ./ms
+```
+
+## With Docker compose
+### up all the containers, run locally in 8080 port
+```shell script
+make up
+```
+or
+```shell script
+docker-compose up
+```
+
+### down all the containers
+```shell script
+make down
+```
+or
+```shell script
+docker-compose down --remove-orphans
+```
+
+### check status
+```shell script
+docker-compose ps
 ```
 
 ### Create a new user (Server response: 201)
