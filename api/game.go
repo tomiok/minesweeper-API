@@ -50,7 +50,7 @@ func (s *Services) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.CreatedAt = time.Now()
-	if err := s.userService.CreateUser(&user); err != nil {
+	if err := s.gameService.CreateUser(&user); err != nil {
 		if err.Error() == "already_exists" {
 			logs.Log().Error("user already exists")
 			ErrAlreadyExists.Send(w)
@@ -67,7 +67,7 @@ func (s *Services) startGameHandler(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	gameID := chi.URLParam(r, "gameID")
 
-	if _, err := s.userService.GetUserByName(username); err != nil {
+	if _, err := s.gameService.GetUser(username); err != nil {
 		logs.Log().Error("user is not present", zap.Error(err))
 		ErrUserNotFound.Send(w)
 		return
@@ -90,7 +90,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 	body := r.Body
 	defer body.Close()
 
-	if _, err := s.userService.GetUserByName(username); err != nil {
+	if _, err := s.gameService.GetUser(username); err != nil {
 		logs.Log().Error("user is not present", zap.Error(err))
 		ErrUserNotFound.Send(w)
 		return
@@ -130,7 +130,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Services) flushCacheHandler(w http.ResponseWriter, r *http.Request) {
-	err := s.gameService.Flush()
+	err := s.gameService.FlushAll()
 
 	if err != nil {
 		ErrBadRequest.Send(w)

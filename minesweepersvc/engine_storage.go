@@ -57,6 +57,6 @@ func (s *GameEngineStorage) GetGame(name string) (*Game, error) {
 	return game, nil
 }
 
-func (s *GameEngineStorage) Flush() error {
+func (s *GameEngineStorage) FlushAll() error {
 	return s.db.FlushAll()
 }

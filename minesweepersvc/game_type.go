@@ -63,7 +63,9 @@ type MineSweeperGameService interface {
 	CreateGame(game *Game) error
 	Start(name string) (*Game, error)
 	Click(name, clickType string, i, j int) (*Game, error) //click type [click, flag, mark]
-	Flush() error
+	FlushAll() error
+	CreateUser(user *User) error
+	GetUser(username string) (*User, error)
 }
 
 type MineSweeperGameStorage interface {
@@ -72,21 +74,11 @@ type MineSweeperGameStorage interface {
 	GetGame(name string) (*Game, error)
 	CreateUser(u *User) error
 	GetUser(username string) (*User, error)
-	Flush() error
-}
-
-type MineSweeperUserService interface {
-	CreateUser(u *User) error
-	GetUserByName(username string) (*User, error)
+	FlushAll() error
 }
 
 type MSGameService struct {
 	gameStorage MineSweeperGameStorage
-	userService MineSweeperUserService
-}
-
-type MSUserService struct {
-	MineSweeperGameStorage
 }
 
 func (s status) new() string {
@@ -105,25 +97,19 @@ func (s status) lost() string {
 	return Lost
 }
 
-func (u *MSUserService) CreateUser(user *User) error {
-	return u.MineSweeperGameStorage.CreateUser(user)
-}
-
-func (u *MSUserService) GetUserByName(username string) (*User, error) {
-	return u.MineSweeperGameStorage.GetUser(username)
-}
-
 func NewGameService(db DB) MineSweeperGameService {
 	return &MSGameService{
 		gameStorage: NewGameEngineStorage(db),
-		userService: &MSUserService{NewGameEngineStorage(db)},
 	}
 }
 
-func NewUserService(db DB) MineSweeperUserService {
-	return &MSUserService{
-		NewGameEngineStorage(db),
-	}
+func (s *MSGameService) GetUser(username string) (*User, error) {
+	return s.gameStorage.GetUser(username)
+}
+
+func (s *MSGameService) CreateUser(user *User) error {
+	return s.gameStorage.CreateUser(user)
+
 }
 
 func (s *MSGameService) CreateGame(game *Game) error {
@@ -132,7 +118,7 @@ func (s *MSGameService) CreateGame(game *Game) error {
 		return errors.New("username empty is not allowed")
 	}
 
-	_, err := s.userService.GetUserByName(username)
+	_, err := s.gameStorage.GetUser(username)
 
 	if err != nil {
 		return errors.New("user_not_found")
@@ -212,8 +198,8 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 	return game, nil
 }
 
-func (s *MSGameService) Flush() error {
-	return s.gameStorage.Flush()
+func (s *MSGameService) FlushAll() error {
+	return s.gameStorage.FlushAll()
 }
 
 func isNormalClick(clickType string) bool {
