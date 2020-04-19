@@ -37,15 +37,18 @@ type Cell struct {
 }
 
 type Game struct {
-	Name         string     `json:"name"`
-	Rows         int        `json:"rows"`
-	Cols         int        `json:"cols"`
-	Mines        int        `json:"mines"`
-	Status       statuses   `json:"-"` //new, in_progress, won, lost
-	S            string     `json:"status"`
-	Grid         []CellGrid `json:"grid,omitempty"`
-	ClickCounter int        `json:"-"`
-	Username     string     `json:"username"`
+	Name         string        `json:"name"`
+	Rows         int           `json:"rows"`
+	Cols         int           `json:"cols"`
+	Mines        int           `json:"mines"`
+	Status       statuses      `json:"-"` //new, in_progress, won, lost
+	S            string        `json:"status"`
+	Grid         []CellGrid    `json:"grid,omitempty"`
+	ClickCounter int           `json:"-"`
+	Username     string        `json:"username"`
+	CreatedAt    time.Time     `json:"-"`
+	StartedAt    time.Time     `json:"-"`
+	TimeSpent    time.Duration `json:"time_spent"`
 }
 
 type User struct {
@@ -155,6 +158,7 @@ func (s *MSGameService) CreateGame(game *Game) error {
 	}
 	game.Status = gameStatus.new
 	game.S = game.Status()
+	game.CreatedAt = time.Now()
 
 	err = s.gameStorage.CreateGame(game)
 	return err
@@ -170,6 +174,7 @@ func (s *MSGameService) Start(name string) (*Game, error) {
 
 	game.Status = gameStatus.inProgress
 	game.S = game.Status()
+	game.StartedAt = time.Now()
 	err = s.gameStorage.Update(game)
 	logs.Sugar().Infof("%#v\n", game.Grid)
 	return game, err

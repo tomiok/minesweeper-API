@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 type ResponseAPI struct {
@@ -37,6 +38,7 @@ func LostGame(clicks int, username string) *ResponseAPI {
 }
 
 type LostResponse struct {
-	Message string `json:"message"`
-	Clicks  int    `json:"clicks"`
+	Message      string        `json:"message"`
+	Clicks       int           `json:"clicks"`
+	GameDuration time.Duration `json:"game_duration"`
 }

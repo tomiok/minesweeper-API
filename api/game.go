@@ -112,6 +112,7 @@ func (s *Services) clickHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if minesweepersvc.CheckLost(game.S) {
+		game.TimeSpent = time.Now().Sub(game.StartedAt)
 		LostGame(game.ClickCounter, username).Send(w)
 		return
 	}
