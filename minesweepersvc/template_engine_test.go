@@ -9,7 +9,7 @@ var game = Game{
 	Rows:         10,
 	Cols:         10,
 	Mines:        20,
-	Status:       "",
+	Status:       nil,
 	Grid:         nil,
 	ClickCounter: 0,
 	Username:     "tomas",
@@ -37,7 +37,8 @@ func Test_CheckWon_notStarted(t *testing.T) {
 func Test_CheckWon_started(t *testing.T) {
 	g := game
 	g.ClickCounter = 80
-	g.Status = "in_progress"
+	g.Status = gameStatus.inProgress
+	g.S = g.Status()
 	won := checkWon(&g)
 	if !won {
 		t.Fail()
