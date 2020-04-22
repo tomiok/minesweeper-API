@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/tomiok/minesweeper-API/internal/logs"
+	"math"
 	"time"
 )
 
@@ -46,9 +47,10 @@ type Game struct {
 	Grid         []CellGrid    `json:"grid,omitempty"`
 	ClickCounter int           `json:"-"`
 	Username     string        `json:"username"`
-	CreatedAt    time.Time     `json:"-"`
+	CreatedAt    time.Time     `json:"created_at,omitempty"`
 	StartedAt    time.Time     `json:"-"`
 	TimeSpent    time.Duration `json:"time_spent"`
+	Points       float32       `json:"points,omitempty"`
 }
 
 type User struct {
@@ -217,4 +219,21 @@ func getUUIDName() string {
 
 func CheckLost(status string) bool {
 	return status == "lost"
+}
+
+//after 15 seconds the time matters.
+func (game *Game) calculateScoring() float64 {
+	seconds := game.TimeSpent.Seconds()
+	totalGrid := game.Rows * game.Cols
+	clicks := game.ClickCounter
+	relativeValue := 100.0
+	if seconds > 15 {
+		u := seconds / 10
+		positiveClicks := totalGrid - clicks
+		a := float64(positiveClicks) / relativeValue
+		return math.Dim(a, u)
+	}
+
+	positiveClicks := totalGrid - clicks
+	return float64(positiveClicks) / relativeValue
 }
