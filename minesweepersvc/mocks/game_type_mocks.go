@@ -2,10 +2,11 @@
 // Source: minesweepersvc/game_type.go
 
 // Package mock_minesweepersvc is a generated GoMock package.
-package minesweepersvc
+package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
+	"github.com/tomiok/minesweeper-API/minesweepersvc"
 	reflect "reflect"
 )
 
@@ -33,7 +34,7 @@ func (m *MockMineSweeperGameService) EXPECT() *MockMineSweeperGameServiceMockRec
 }
 
 // CreateGame mocks base method
-func (m *MockMineSweeperGameService) CreateGame(game *Game) error {
+func (m *MockMineSweeperGameService) CreateGame(game *minesweepersvc.Game) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateGame", game)
 	ret0, _ := ret[0].(error)
@@ -47,10 +48,10 @@ func (mr *MockMineSweeperGameServiceMockRecorder) CreateGame(game interface{}) *
 }
 
 // Start mocks base method
-func (m *MockMineSweeperGameService) Start(name string) (*Game, error) {
+func (m *MockMineSweeperGameService) Start(name string) (*minesweepersvc.Game, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Start", name)
-	ret0, _ := ret[0].(*Game)
+	ret0, _ := ret[0].(*minesweepersvc.Game)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -62,10 +63,10 @@ func (mr *MockMineSweeperGameServiceMockRecorder) Start(name interface{}) *gomoc
 }
 
 // Click mocks base method
-func (m *MockMineSweeperGameService) Click(name, clickType string, i, j int) (*Game, error) {
+func (m *MockMineSweeperGameService) Click(name, clickType string, i, j int) (*minesweepersvc.Game, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Click", name, clickType, i, j)
-	ret0, _ := ret[0].(*Game)
+	ret0, _ := ret[0].(*minesweepersvc.Game)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -91,7 +92,7 @@ func (mr *MockMineSweeperGameServiceMockRecorder) FlushAll() *gomock.Call {
 }
 
 // CreateUser mocks base method
-func (m *MockMineSweeperGameService) CreateUser(user *User) error {
+func (m *MockMineSweeperGameService) CreateUser(user *minesweepersvc.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", user)
 	ret0, _ := ret[0].(error)
@@ -105,10 +106,10 @@ func (mr *MockMineSweeperGameServiceMockRecorder) CreateUser(user interface{}) *
 }
 
 // GetUser mocks base method
-func (m *MockMineSweeperGameService) GetUser(username string) (*User, error) {
+func (m *MockMineSweeperGameService) GetUser(username string) (*minesweepersvc.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", username)
-	ret0, _ := ret[0].(*User)
+	ret0, _ := ret[0].(*minesweepersvc.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -143,7 +144,7 @@ func (m *MockMineSweeperGameStorage) EXPECT() *MockMineSweeperGameStorageMockRec
 }
 
 // CreateGame mocks base method
-func (m *MockMineSweeperGameStorage) CreateGame(game *Game) error {
+func (m *MockMineSweeperGameStorage) CreateGame(game *minesweepersvc.Game) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateGame", game)
 	ret0, _ := ret[0].(error)
@@ -157,7 +158,7 @@ func (mr *MockMineSweeperGameStorageMockRecorder) CreateGame(game interface{}) *
 }
 
 // Update mocks base method
-func (m *MockMineSweeperGameStorage) Update(game *Game) error {
+func (m *MockMineSweeperGameStorage) Update(game *minesweepersvc.Game) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", game)
 	ret0, _ := ret[0].(error)
@@ -171,10 +172,10 @@ func (mr *MockMineSweeperGameStorageMockRecorder) Update(game interface{}) *gomo
 }
 
 // GetGame mocks base method
-func (m *MockMineSweeperGameStorage) GetGame(name string) (*Game, error) {
+func (m *MockMineSweeperGameStorage) GetGame(name string) (*minesweepersvc.Game, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetGame", name)
-	ret0, _ := ret[0].(*Game)
+	ret0, _ := ret[0].(*minesweepersvc.Game)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -186,7 +187,7 @@ func (mr *MockMineSweeperGameStorageMockRecorder) GetGame(name interface{}) *gom
 }
 
 // CreateUser mocks base method
-func (m *MockMineSweeperGameStorage) CreateUser(u *User) error {
+func (m *MockMineSweeperGameStorage) CreateUser(u *minesweepersvc.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", u)
 	ret0, _ := ret[0].(error)
@@ -200,10 +201,10 @@ func (mr *MockMineSweeperGameStorageMockRecorder) CreateUser(u interface{}) *gom
 }
 
 // GetUser mocks base method
-func (m *MockMineSweeperGameStorage) GetUser(username string) (*User, error) {
+func (m *MockMineSweeperGameStorage) GetUser(username string) (*minesweepersvc.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", username)
-	ret0, _ := ret[0].(*User)
+	ret0, _ := ret[0].(*minesweepersvc.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

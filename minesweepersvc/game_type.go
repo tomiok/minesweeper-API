@@ -83,7 +83,7 @@ type MineSweeperGameStorage interface {
 }
 
 type MSGameService struct {
-	gameStorage MineSweeperGameStorage
+	GameStorage MineSweeperGameStorage
 }
 
 func (s status) new() string {
@@ -104,16 +104,16 @@ func (s status) lost() string {
 
 func NewGameService(db DB) MineSweeperGameService {
 	return &MSGameService{
-		gameStorage: NewGameEngineStorage(db),
+		GameStorage: NewGameEngineStorage(db),
 	}
 }
 
 func (s *MSGameService) GetUser(username string) (*User, error) {
-	return s.gameStorage.GetUser(username)
+	return s.GameStorage.GetUser(username)
 }
 
 func (s *MSGameService) CreateUser(user *User) error {
-	return s.gameStorage.CreateUser(user)
+	return s.GameStorage.CreateUser(user)
 
 }
 
@@ -123,7 +123,7 @@ func (s *MSGameService) CreateGame(game *Game) error {
 		return errors.New("username empty is not allowed")
 	}
 
-	_, err := s.gameStorage.GetUser(username)
+	_, err := s.GameStorage.GetUser(username)
 
 	if err != nil {
 		return errors.New("user_not_found")
@@ -162,12 +162,12 @@ func (s *MSGameService) CreateGame(game *Game) error {
 	game.S = game.Status()
 	game.CreatedAt = time.Now()
 
-	err = s.gameStorage.CreateGame(game)
+	err = s.GameStorage.CreateGame(game)
 	return err
 }
 
 func (s *MSGameService) Start(name string) (*Game, error) {
-	game, err := s.gameStorage.GetGame(name)
+	game, err := s.GameStorage.GetGame(name)
 	if err != nil {
 		return nil, err
 	}
@@ -177,13 +177,13 @@ func (s *MSGameService) Start(name string) (*Game, error) {
 	game.Status = gameStatus.inProgress
 	game.S = game.Status()
 	game.StartedAt = time.Now()
-	err = s.gameStorage.Update(game)
+	err = s.GameStorage.Update(game)
 	logs.Sugar().Infof("%#v\n", game.Grid)
 	return game, err
 }
 
 func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
-	game, err := s.gameStorage.GetGame(name)
+	game, err := s.GameStorage.GetGame(name)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 		}
 	}
 
-	if err := s.gameStorage.Update(game); err != nil {
+	if err := s.GameStorage.Update(game); err != nil {
 		return nil, err
 	}
 
@@ -206,7 +206,7 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 }
 
 func (s *MSGameService) FlushAll() error {
-	return s.gameStorage.FlushAll()
+	return s.GameStorage.FlushAll()
 }
 
 func isNormalClick(clickType string) bool {

@@ -1,8 +1,9 @@
-package minesweepersvc
+package mocks
 
 import (
 	"github.com/golang/mock/gomock"
 	"github.com/tomiok/minesweeper-API/internal/logs"
+	"github.com/tomiok/minesweeper-API/minesweepersvc"
 	"testing"
 	"time"
 )
@@ -13,13 +14,13 @@ func Test_createGame(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	gameStorageMock := NewMockMineSweeperGameStorage(mockCtrl)
-	s := MSGameService{gameStorageMock}
-	gameStorageMock.EXPECT().GetUser("some").Return(&User{
+	s := minesweepersvc.MSGameService{GameStorage: gameStorageMock}
+	gameStorageMock.EXPECT().GetUser("some").Return(&minesweepersvc.User{
 		Username:  "some",
 		CreatedAt: time.Now(),
 	}, nil)
 
-	game := &Game{
+	game := &minesweepersvc.Game{
 		Name:         "",
 		Rows:         5,
 		Cols:         5,
@@ -53,13 +54,13 @@ func Test_createGameWithName(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	gameStorageMock := NewMockMineSweeperGameStorage(mockCtrl)
-	s := MSGameService{gameStorageMock}
-	gameStorageMock.EXPECT().GetUser("some").Return(&User{
+	s := minesweepersvc.MSGameService{gameStorageMock}
+	gameStorageMock.EXPECT().GetUser("some").Return(&minesweepersvc.User{
 		Username:  "some",
 		CreatedAt: time.Now(),
 	}, nil)
 
-	game := &Game{
+	game := &minesweepersvc.Game{
 		Name:         "game1",
 		Rows:         5,
 		Cols:         5,
@@ -97,9 +98,9 @@ func Test_createGameFail_WithoutUsername(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	gameStorageMock := NewMockMineSweeperGameStorage(mockCtrl)
-	s := MSGameService{gameStorageMock}
+	s := minesweepersvc.MSGameService{gameStorageMock}
 
-	game := &Game{
+	game := &minesweepersvc.Game{
 		Name:         "game1",
 		Rows:         5,
 		Cols:         5,
