@@ -2,21 +2,21 @@ version: "3.3"
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: . #current directory
+      dockerfile: Dockerfile #use the dockerfile called Dockerfile
     ports:
-      - "8080:8080"
-    links:
+      - "8080:8080" #forward port from my app to the OS
+    links: # app needs that redis is deployed successfully before app runs
       - redis
     environment: # Pass environment variables to the service
-      REDIS_LOCAL_URL: "redis:6379"
+      REDIS_LOCAL_URL: "redis:6379" #the key is the same as the service name (redis)
     networks:
-      - backend
+      - minesweepernet
   redis:
     image: "redis:alpine" #could be redis or redis alpine, is the same
     networks:
-      - backend
+      - minesweepernet
     ports:
-      - "6379:6379"
+      - "6379:6379" #forward port from Redis to the OS
 networks:
-  backend: # network to communicate containers with each other
+  minesweepernet: # network to communicate containers with each other
