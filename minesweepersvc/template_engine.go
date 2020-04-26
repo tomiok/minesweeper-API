@@ -81,6 +81,7 @@ func flagOrQuestionMarkCell(game *Game, i, j int, clickType string) error {
 	return nil
 }
 
+// checkWon if the user clicked all the cells without any mine
 func checkWon(game *Game) bool {
 	if game.Status == nil {
 		return false
