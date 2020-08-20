@@ -7,7 +7,7 @@ For build it locally, you might need Redis installed locally, otherwise, use doc
 or directly run with *docker-compose*
 
 
-## Using golang and remote Redis.
+## Using golang and remote Redis. (check out the redis availability)
 
 ### Run the tests
 ```shell script
