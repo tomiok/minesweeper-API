@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// some default game parameters if the user does not provide those.
 const (
 	defaultRows  = 6
 	defaultCols  = 6
@@ -22,21 +23,22 @@ const (
 	Won          = "won"
 )
 
-type status struct{}
-
 var gameStatus status
 
+type status struct{}
 type statuses func() string
 type CellGrid []Cell
 
+//Cell express the status of every cell in the board.
 type Cell struct {
 	Mine        bool   `json:"mine"`
 	Clicked     bool   `json:"clicked"`
 	Flagged     bool   `json:"flagged"` // add a red flag in the cell
-	Marked      bool   `json:"marked"`  // add a question mark
+	Marked      bool   `json:"marked"`  // add a question mark int the cell
 	Coordinates string `json:"coordinates"`
 }
 
+//Game contains all the structure of the game, user, results, parameters, etc.
 type Game struct {
 	Name         string        `json:"name"`
 	Rows         int           `json:"rows"`

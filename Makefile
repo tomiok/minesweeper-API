@@ -10,6 +10,9 @@ build:
 run:
 	@go run cmd/main.go
 
+## tests
+test:
+	@go test ./...
 ## docker compose
 up:
 	docker-compose up --build
