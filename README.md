@@ -48,7 +48,15 @@ docker-compose down --remove-orphans
 docker-compose ps
 ```
 
-### Create a new user (Server response: 201)
+
+#### For testing in development environment, change localhost:8080 with http://ms-tomas-api.herokuapp.com
+### Check if API is up and running (server response: 200)
+```shell script
+curl -X GET \
+  http://localhost:8080/heartbeat
+```
+
+### Create a new user (server response: 201)
 ```shell script
 curl -X POST \
   http://localhost:8080/users \
@@ -89,9 +97,4 @@ curl -X POST \
 ### Demo URL
 ```
 http://ms-tomas-api.herokuapp.com/heartbeat
-```
-
-### Check out the CLI for this minesweeper
-```
-https://github.com/nicolasacquaviva/minesweeper-cli
 ```
