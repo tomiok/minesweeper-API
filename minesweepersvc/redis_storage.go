@@ -32,9 +32,14 @@ func (r *RedisDB) Save(key string, value interface{}) error {
 
 func (r *RedisDB) Get(key string) (*User, error) {
 	reply, err := redis.String(r.Do("GET", key))
-	logs.Sugar().Infof("%s", reply)
+
+	if err != nil {
+		return nil, err
+	}
+	logs.Sugar().Info(reply)
 	var user User
 	err = json.Unmarshal([]byte(reply), &user)
+
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +48,11 @@ func (r *RedisDB) Get(key string) (*User, error) {
 
 func (r *RedisDB) GetGame(key string) (*Game, error) {
 	reply, err := redis.String(r.Do("GET", key))
-	logs.Sugar().Infof("%s", reply)
+
+	if err != nil {
+		return nil, err
+	}
+	logs.Sugar().Info(reply)
 	var game Game
 	err = json.Unmarshal([]byte(reply), &game)
 	if err != nil {
@@ -73,20 +82,7 @@ func getConn() redis.Conn {
 	logs.Log().Info("connecting redis...")
 	redisURL := os.Getenv("REDISCLOUD_URL")
 
-	if redisURL != "" {
-		redisPassword := os.Getenv("REDISCLOUD_PASSWORD")
-		c, err := redis.DialURL(redisURL, redis.DialPassword(redisPassword))
-		if err != nil {
-			logs.Log().Fatal("cannot connect with Redis")
-			panic(err)
-		}
-		return c
-	}
-
-	localURL := os.Getenv("REDIS_LOCAL_URL")
-	//format url ==> "redis://redis:6379"
-	redisURL = fmt.Sprintf("redis://%s", localURL)
-	c, err := redis.DialURL(redisURL)
+	c, err := connectRedis(redisURL)
 
 	if err != nil {
 		logs.Log().Fatal("cannot connect with Redis")
@@ -94,4 +90,16 @@ func getConn() redis.Conn {
 	}
 
 	return c
+}
+
+//format url ==> "redis://redis:6379"
+func connectRedis(redisURL string) (redis.Conn, error) {
+	if redisURL != "" {
+		redisPassword := os.Getenv("REDISCLOUD_PASSWORD")
+		return redis.DialURL(redisURL, redis.DialPassword(redisPassword))
+	} else {
+		localURL := os.Getenv("REDIS_LOCAL_URL")
+		redisURL = fmt.Sprintf("redis://%s", localURL)
+		return redis.DialURL(redisURL)
+	}
 }
