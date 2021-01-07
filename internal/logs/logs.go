@@ -12,12 +12,9 @@ var (
 
 /*
 InitDefault Function initializes a logger using uber-go/zap package in the application.
+Use only one config for this PoC.
 */
-func InitDefault(env string) {
-	disableCaller := true
-	if env != "prod" {
-		disableCaller = false
-	}
+func InitDefault() {
 	conf := zap.Config{
 		Encoding: "json",
 		Level:    zap.NewAtomicLevelAt(zapcore.InfoLevel),
@@ -36,7 +33,7 @@ func InitDefault(env string) {
 		},
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
-		DisableCaller:    disableCaller,
+		DisableCaller:    true,
 	}
 	log, _ = conf.Build()
 	sugar = log.Sugar()

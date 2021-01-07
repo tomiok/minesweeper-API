@@ -9,14 +9,6 @@ import (
 	"os"
 )
 
-type DB interface {
-	Save(key string, value interface{}) error
-	Get(key string) (*User, error)
-	GetGame(key string) (*Game, error)
-	Exists(key string) bool
-	FlushAll() error
-}
-
 type RedisDB struct {
 	redis.Conn
 }
@@ -73,7 +65,7 @@ func (r *RedisDB) Exists(key string) bool {
 
 func (r *RedisDB) FlushAll() error {
 	s, err := redis.String(r.Do("FLUSHALL"))
-	logs.Log().Info("flushed with reply: ", zap.String("reply", s))
+	logs.Log().Info("flushed!", zap.String("reply", s))
 	return err
 }
 

@@ -140,3 +140,7 @@ func (s *Services) flushCacheHandler(w http.ResponseWriter, r *http.Request) {
 
 	Success(nil, http.StatusOK).Send(w)
 }
+
+func (s *Services) healthCheck(w http.ResponseWriter, r *http.Request) {
+	_, _ = w.Write([]byte("OK"))
+}

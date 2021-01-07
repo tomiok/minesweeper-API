@@ -4,6 +4,14 @@ import (
 	"errors"
 )
 
+type DB interface {
+	Save(key string, value interface{}) error
+	Get(key string) (*User, error)
+	GetGame(key string) (*Game, error)
+	Exists(key string) bool
+	FlushAll() error
+}
+
 type GameEngineStorage struct {
 	db DB
 }
@@ -42,7 +50,7 @@ func (s *GameEngineStorage) CreateGame(game *Game) error {
 	return nil
 }
 
-func (s *GameEngineStorage) Update(game *Game) error {
+func (s *GameEngineStorage) UpdateGame(game *Game) error {
 	if _, err := s.db.Get(game.Name); err != nil {
 		return errors.New("game do not exist")
 	}

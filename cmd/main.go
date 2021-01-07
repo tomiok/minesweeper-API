@@ -11,7 +11,7 @@ const defaultPort = "8080"
 func main() {
 	serverPort := os.Getenv("PORT")
 	testEnvVariable := os.Getenv("TEST")
-	logs.InitDefault("dev") //hardcoded at dev environment for the PoC API
+	logs.InitDefault()
 	if serverPort == "" {
 		serverPort = defaultPort
 	}

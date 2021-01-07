@@ -80,10 +80,10 @@ curl -X POST \
 
 ### Start a game (Server response: 200, if the game or username are not present, 400 will be sent to the client)
 ```shell script
-localhost:8080/games/game1/users/tomasito
+curl -X POST localhost:8080/games/game1/users/tomasito
 ```
 
-### Play clicking, marking or flagging (click_type might be click, mark or flag, Server response: 200)
+### Play by clicking, marking or flagging (click_type might be click, mark or flag, Server response: 200)
 ```shell script
 curl -X POST \
   http://localhost:8080/games/game1/users/tomasito/click \

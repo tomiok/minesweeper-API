@@ -157,18 +157,18 @@ func (mr *MockMineSweeperGameStorageMockRecorder) CreateGame(game interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGame", reflect.TypeOf((*MockMineSweeperGameStorage)(nil).CreateGame), game)
 }
 
-// Update mocks base method
-func (m *MockMineSweeperGameStorage) Update(game *minesweepersvc.Game) error {
+// UpdateGame mocks base method
+func (m *MockMineSweeperGameStorage) UpdateGame(game *minesweepersvc.Game) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", game)
+	ret := m.ctrl.Call(m, "UpdateGame", game)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Update indicates an expected call of Update
+// UpdateGame indicates an expected call of UpdateGame
 func (mr *MockMineSweeperGameStorageMockRecorder) Update(game interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockMineSweeperGameStorage)(nil).Update), game)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGame", reflect.TypeOf((*MockMineSweeperGameStorage)(nil).UpdateGame), game)
 }
 
 // GetGame mocks base method

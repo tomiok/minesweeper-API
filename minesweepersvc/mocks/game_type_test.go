@@ -9,7 +9,7 @@ import (
 )
 
 func Test_createGame(t *testing.T) {
-	logs.InitDefault("test")
+	logs.InitDefault()
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -98,7 +98,7 @@ func Test_createGameFail_WithoutUsername(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	gameStorageMock := NewMockMineSweeperGameStorage(mockCtrl)
-	s := minesweepersvc.MSGameService{gameStorageMock}
+	s := minesweepersvc.MSGameService{GameStorage: gameStorageMock}
 
 	game := &minesweepersvc.Game{
 		Name:         "game1",
