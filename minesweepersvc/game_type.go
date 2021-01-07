@@ -50,7 +50,7 @@ type Game struct {
 	CreatedAt    time.Time     `json:"created_at,omitempty"`
 	StartedAt    time.Time     `json:"-"`
 	TimeSpent    time.Duration `json:"time_spent"`
-	Points       float32       `json:"points,omitempty"`
+	Points       float64       `json:"points,omitempty"`
 }
 
 type User struct {
@@ -93,7 +93,7 @@ func CheckLost(status string) bool {
 }
 
 //after 15 seconds the time matters.
-func (game *Game) calculateScoring() float64 {
+func (game *Game) calculateScoring() {
 	seconds := game.TimeSpent.Seconds()
 	totalGrid := game.Rows * game.Cols
 	clicks := game.ClickCounter
@@ -102,9 +102,9 @@ func (game *Game) calculateScoring() float64 {
 		u := seconds / 10
 		positiveClicks := totalGrid - clicks
 		a := float64(positiveClicks) / relativeValue
-		return math.Dim(a, u)
+		game.Points = math.Dim(a, u)
 	}
 
 	positiveClicks := totalGrid - clicks
-	return float64(positiveClicks) / relativeValue
+	game.Points = float64(positiveClicks) / relativeValue
 }

@@ -51,7 +51,7 @@ func clickCell(game *Game, i, j int) error {
 	if checkWon(game) {
 		game.Status = gameStatus.won
 		game.S = game.Status()
-		game.TimeSpent = time.Now().Sub(game.StartedAt)
+		game.Points = game.calculateScoring()
 	}
 
 	return nil
