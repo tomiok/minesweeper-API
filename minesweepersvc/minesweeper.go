@@ -97,7 +97,6 @@ func (s *MSGameService) Start(name string) (*Game, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	buildBoard(game)
 
 	game.Status = gameStatus.inProgress

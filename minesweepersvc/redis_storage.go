@@ -73,15 +73,25 @@ func getConn() redis.Conn {
 	logs.Log().Info("connecting redis...")
 	redisURL := os.Getenv("REDISCLOUD_URL")
 
-	if redisURL == "" {
-		localURL := os.Getenv("REDIS_LOCAL_URL")
-		redisURL = fmt.Sprintf("redis://%s", localURL)
+	if redisURL != "" {
+		redisPassword := os.Getenv("REDISCLOUD_PASSWORD")
+		c, err := redis.DialURL(redisURL, redis.DialPassword(redisPassword))
+		if err != nil {
+			logs.Log().Fatal("cannot connect with Redis")
+			panic(err)
+		}
+		return c
 	}
+
+	localURL := os.Getenv("REDIS_LOCAL_URL")
 	//format url ==> "redis://redis:6379"
+	redisURL = fmt.Sprintf("redis://%s", localURL)
 	c, err := redis.DialURL(redisURL)
+
 	if err != nil {
 		logs.Log().Fatal("cannot connect with Redis")
 		panic(err)
 	}
+
 	return c
 }
