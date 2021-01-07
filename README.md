@@ -48,8 +48,7 @@ docker-compose down --remove-orphans
 docker-compose ps
 ```
 
-
-#### For testing in development environment, change localhost:8080 with http://ms-tomas-api.herokuapp.com
+#### For testing in development environment, change localhost:8080 with https://tomas-ms-api-second.herokuapp.com
 ### Check if API is up and running (server response: 200)
 ```shell script
 curl -X GET \
@@ -94,7 +93,7 @@ curl -X POST \
 }'
 ```
 
-### Demo URL
+### Demo URL in development
 ```
-http://ms-tomas-api.herokuapp.com/heartbeat
+https://tomas-ms-api-second.herokuapp.com/heartbeat
 ```
