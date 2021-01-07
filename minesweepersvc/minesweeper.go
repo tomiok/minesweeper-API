@@ -123,6 +123,8 @@ func (s *MSGameService) Click(name, clickType string, i, j int) (*Game, error) {
 		}
 	}
 
+	//some millis are lost here :(
+	game.TimeSpent = time.Now().Sub(game.StartedAt)
 	if err := s.GameStorage.UpdateGame(game); err != nil {
 		return nil, err
 	}
